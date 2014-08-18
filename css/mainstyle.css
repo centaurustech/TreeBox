@@ -1,42 +1,219 @@
-html, body, #container{
+/***** Table of Contents
+    Forms
+    Header (templates/header.php)
+    Homepage (index.php)
+        Left pane
+        Map
+        Projects near you
+    Add project page (add_project.php)
+
+    1PX = .0625em
+****/
+
+html, body, div#container{
     height: 100%;
     width: 100%;
     margin: 0;
+    padding: 0;
     position: relative;
 }
-#header{
+article, aside, figure, footer, header, nav, section {
+    display: block;
+}  
+
+/************************************Forms***********************************/
+span.form_required{
+    color: red;
+    float: none; 
+    color: red;
+    font-size: .6em;
+    margin-left: .6em;
+    font-weight: normal;
+}
+p.error{
+    color: red;
+    font-size: 1em;
+}
+div.error{
+    display: none;
+    margin-bottom: .7em;
+    margin-left: .7em;
+    font-size: 1.4em;
+}
+li.error{
+    color: red;
+    font-size: .9em;
+}
+/***************************header div (templates/header.php)*************************/
+div#header{
     width: auto;
-    height: 10%;
+    height: 15%;
     background-color:gray;
-    border: 1px solid black;
+    border: .1em solid black;
+    position: relative; /*to position the div#navbar_div at the bottom of the div*/
 }
-#left_pane{
-    width: 20%;
-    height: 80%;
+div#logo{
+    height: auto;
+}
+
+div#navbar_div{
+    padding: 0em .34em; /*top/bot right/left*/ 
+    margin-left: .07em;
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    background-color: #3D3D3D;
+    border: .07em solid #696969;
+    border-radius: .43em;
+    /*-webkit-border-radius: 1em;
+    -moz-border-radius: 1em;*/
+}
+ul{
+    padding-left: 0; /*default of 40 for some reason*/
+    margin: .8125em 0em; /*.71875em = height of the a links*/
+}
+#navbar_menu li {
+    display: inline;
+    list-style: none;
+}
+#navbar_menu li a { /*most of this is controlled by the "js/jquery.navbar.js" custom plugin, see also "js/myscripts/mainJS.js*/
+    display: inline;
+    padding: 1em;
+}
+
+/********************************HOME PAGE (index.php)****************************/
+/*------------------left pane-------------*/
+/*div#left_pane{
+    width: 19.5%;
+    height: 79.7%;
     float: left;
+    border: .1em solid black;
 }
-#add_a_project{
+/*div#ads{
     width: 100%;
-    height: 60%;
-    background-color: #29C9FF;
-    color: white;
-    border: 1px solid black;
-    font-family: 'Lato', serif;
-    font-size: 24px;
-}
-#add_project_heading{
-    padding-left: 10%;
-    margin-top: 4%;
-}
-#ads{
-    width: 100%;
-    height: 40%;
+    height: 39%;
     background-color: #996;
-    border: 1px solid black;
-}
-#map_canvas{
-    float: right;
+    border: .1em solid black;
+}*/
+
+/*---------------*map div-------------*/
+div#map_canvas{
+    float: left;
     width: 80%;
     height: 80%;
     background-color: gray;
+}
+/*--------------map_message div--------------*/
+div#map_message {
+    position: absolute;
+    padding: 1em;
+    background: white;
+    border: 2px black solid;
+    border-radius: 10px;
+}
+h1#message_projectName{
+    margin-bottom: 0;
+    margin-top: .4em;
+}
+p#message_projectDate{
+    text-align: right;
+    font-size: .8em;
+    margin-bottom: 0;
+    margin-top: .4em;
+}
+p#message_projectAddress{
+    text-align: right;
+    font-size: .85em;
+    margin-top: .2em;
+}
+/*------------projects_near_you div------------*/
+div#projects_near_you{
+	float: right;
+	width: 19.8%;
+	height: 80%;
+	background-color: #FF5E08;
+    border: .1em solid black;
+}
+
+/******************************add_project page (add_project.php)************************/
+div#add_project{
+    width: 57%;
+    /*height: 60%;*/
+    height: auto;
+    /*background-color: #29C9FF;*/
+    border: .1em solid black;
+    font-family: 'Lato', serif;
+    font-size: 1.5em;
+
+    margin-left: auto;
+    margin-right: auto; /*centers div*/
+    margin-top: 1em;
+    padding: 0 20px;
+    border-radius: 6px;
+    border: 2px solid #A0C0C0; 
+}
+ /*--------------Form---------------*/
+h1#add_project_heading{
+    padding-left: 10%;
+    margin-top: 4%;
+}
+fieldset.add_project{
+    margin: 1em .5em;
+    padding-top: .1em;
+    border-radius: .6em;
+    border: .2em solid #A0C0C0; 
+}
+legend.add_project{
+    color: blue;
+    font-weight: bold;
+    font-size: 1.6em;
+    margin-bottom: .2em;
+}
+label.add_project{
+    font-size: .85em;
+    float: left;
+    width: 11em;
+    font-weight: bold;
+    text-align: right;
+}
+input[type=text].add_project{
+    display: inline-block;
+    height: 1.5em;
+    width: 18em;
+    padding-left: .3em;
+    font-size: .8em;
+    margin-left: 1em;
+    margin-bottom: .4em;
+}
+textarea#project_description{
+    width: 31.7em;
+    font-size: .8em;
+    margin-left: 6.3em;
+    margin-bottom: .4em;
+    resize: none; /*removes dashes in the bottom right corner*/
+
+    /*Align with form_required asterisk*/
+    display: inline-block;
+    vertical-align: top;
+}
+img.ui-datepicker-trigger{ /*the calendar img*/
+    margin-left: .3em;
+}
+select.add_project{
+    display: inline-block;
+    height: 1.5em;
+    padding-left: .3em;
+    font-size: .8em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+select#select_period{
+    margin-left: 0;
+    margin-right: 0;
+}
+input#submit_project{
+    display: block;
+    margin-top: 1em;
+    float: right;
+    margin-right: 7em;
 }

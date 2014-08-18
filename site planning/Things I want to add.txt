@@ -1,0 +1,12 @@
+Facebook - like, comment, activity feed
+	sign in with FB
+Keep track of user profile (for posts, put the user ID along with the data of the post, then you can find their posts by selecting the rows in the database with the user's ID)
+
+Allow ratings of a user whose a project host
+
+Saved Locations: let the user save locations from where they can check projects around that location
+
+Limit the amount of markers somehow: proximity to the saved location (this can be found by allowing +- lat or lng in any given direction from the lat and lng coordinates of the location position). Only the top 10 most relevant, by filter tags, recent something. 
+	There is also a side bar to check out projects in your area.
+
+crowdfunding - crowdtilt (https://github.com/Crowdtilt/crowdtilt-api-spec/)
