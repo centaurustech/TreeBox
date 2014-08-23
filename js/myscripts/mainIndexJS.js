@@ -22,9 +22,57 @@ $(document).ready(function() {
                 initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 map.setCenter(initialLocation);
                 map.setZoom(10);
-            });
 
-            /*********send ajax request to get nearest projects around user********/
+                /*********send ajax request to get nearest projects around user******** /
+	            /****projects_near_you div****/
+				$.ajax({
+			        url: "phpfunctions/getListOfNearbyProjects.php",
+			        type: "GET",
+			        data: "userLat=" + position.coords.latitude + "&userLng=" + position.coords.longitude,
+			        dataType: "json",
+					error: function(xhr, status, error) {
+						alert("Error: " + xhr.status + " - " + error);
+					},
+					success: function(data) {
+						var html = "<h1 id='nearby_projs_heading'>Projects near you:</h1>"
+							+ "<ul id='nearby_projs_list'>";
+						$.each(data, function(index, value) {
+							/* data retrieved:
+								"project_id" : project_id,
+								"user_id" : user_id,
+					    		"project_name" : project_name,
+					    		"project_description" : project_description
+							*/
+							var projectName = value.project_name;
+							var projectDescrip = value.project_description;
+							var projectId = value.project_id;
+							var projectProx = value.proximity_to_user;
+							html +=	"<li><h2 class='nearby_projs_projectName'><a href='" + projectId + "'></a>" 
+										//link click event set below
+										+ projectName + "</h2>" 
+								+ "<p class='nearby_projs_projectDescrip'>" + projectDescrip + "</p>"
+								+ "<p class='nearby_projs_prox'>" + projectProx + " miles away</p></li>"
+						}); //end $.each
+						$("#projects_near_you").html(html); 
+
+						//set the links to trigger the click event of the marker with the id = the link's href value	
+					    $("#projects_near_you a").click(function(evt){
+					    	evt.preventDefault(); //cancel default of link taking you to a new page
+					    });
+					    $("#projects_near_you li").click(function() {
+							var selectedMarkerId = $(this).find("a:first-child").attr("href");
+							
+							//loop through array of markers until the one with the id
+							var i;
+							for(i = 0; i < markers.length; ++i){
+								if(markers[i].id == selectedMarkerId){
+									google.maps.event.trigger(markers[i], 'click');
+								}
+							}
+						});
+					} //end success
+			    }); //end ajax*/
+            });
         }  //end geolocation of finding users location
 
 		/*******------------------ vertically bound the map, restrict user from scrolling outside---------------------**/
@@ -71,11 +119,24 @@ $(document).ready(function() {
 
 					var marker = new google.maps.Marker({
 						position: new google.maps.LatLng(markerLat, markerLng),
-						title: projectName,
+						title: projectName, //will show up on user hover over marker
+						icon: "images/marker_default_icon_forest.png",
 						map: map		
 					});
+					marker.id = projectId; //set the marker id
+					markers.push(marker); //add the marker to the array of markers
 
 					var markerListener = google.maps.event.addListener(marker, "click", function(event){
+						/*set all markers back to default icon*/
+						var i;
+						for(i = 0; i < markers.length; ++i){
+							markers[i].setIcon("images/marker_default_icon_forest.png"); //default icon
+							markers[i].setZIndex(1); //appear on bottom of stack
+						}
+						//change the icon of the selected marker so that user knows which project was selected
+						marker.setIcon("images/marker_selected_icon_bigTree.png");
+						marker.setZIndex(10); //appear on top of stack
+
 						//send ajax requesting data based on projectId (of marker)
 						$.ajax({
 					        url: "phpfunctions/getProjectById.php",
@@ -137,6 +198,6 @@ $(document).ready(function() {
 					});  // end markerListener*/
 				}); //end $.each()
 			} //end success
-	    }); //end ajax*/		
+	    }); //end ajax*/	
 	}); //end geocoder.geocode();
 });//end document.ready()

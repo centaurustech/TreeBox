@@ -1,8 +1,11 @@
-<?php include("phpfunctions/mainfunctions.php"); ?>
+<?php 
+include("phpfunctions/mainfunctions.php"); 
+session_start();
+?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TreeBox</title>
+        <title>Add your project to TreeBox!</title>
     
     	<!-- style stuff -->
         <link type="text/css" rel='stylesheet' href='css/mainstyle.css' />
@@ -87,11 +90,11 @@
 	        $projectTime = $_POST['select_hour'] . ':' . $projectTimeMin . $_POST['select_period'];
     		
 	        
-	        //Define query
-	        $query = "INSERT INTO projects(project_name, project_description, project_datetime, project_time, 
+	        //Define query (note that $userId is retrieved by header.php)
+	        $query = "INSERT INTO projects(project_name, user_id, project_description, project_datetime, project_time, 
 	        		location_lat, location_lng, location_address, location_city, location_state, location_zipcode, 
 	        		location_country, loc_formatted_address) 
-	            VALUES('$projectName', '$projectDescription', '$projectDate', '$projectTime',  
+	            VALUES('$projectName', '$userId', '$projectDescription', '$projectDate', '$projectTime',  
 	            	'$projectLocLat', ' $projectLocLng', '$projectLocAddress', '$projectLocCity', '$projectLocState', '$projectLocZip', 
 	            	'$projectLocCountry', '$projectLocFormattedAddress')";
 	        executeQuery($query, "Project added to the map!");

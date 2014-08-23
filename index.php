@@ -1,4 +1,8 @@
-<?php include("phpfunctions/mainfunctions.php"); ?>
+<?php 
+include("phpfunctions/mainfunctions.php"); 
+session_start();
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,6 +35,7 @@
 				to this div if user clicks on a marker-->
 			<div id="map_message" style="display:none;"></div>
 
-			<div id="projects_near_you"></div>
+			<div id="projects_near_you">
+            </div>
 
 <?php include("templates/footer.php"); ?>

@@ -1,9 +1,7 @@
 <?php
-	$var = null;
-	$var1 = null;
-	if(true){
-		$var = "hi";
-		$var1 = "world";
+	if($_SERVER['PHP_SELF'] != '/TreeBox/test.php'){
+		header("Location: http://localhost/TreeBox/test.php"); /* Redirect browser */
+		exit();
 	}
-	print $var . " " . $var1;
+	echo $_SERVER['PHP_SELF']; //"/Treebox/test.php"
 ?>

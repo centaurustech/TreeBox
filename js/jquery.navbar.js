@@ -23,7 +23,7 @@
 		}, options);
 			
 		return this.each(function() {
-			var items = $("li a");
+			var items = $(this).find("li a");
 			var o = defaults;
 
 			items.css("font-family", o.fontFamily)
@@ -40,7 +40,7 @@
 
 			items.mouseover(function() {
             	$(this).css("background-color", o.hoverBgColor)
-            		   	.ccc("border", o.hoverBorder)
+            		   	.css("border", o.hoverBorder)
 					   	.css("color", o.hoverColor);
             });
 				
@@ -51,9 +51,9 @@
 			});
 
 			//NOTE THAT this border radius is a border for the entire list, NOT each individual link
-			$("ul li:first-child a").css("border-top-left-radius", o.borderRadius)
+			$(this).find("li:first-child a").css("border-top-left-radius", o.borderRadius)
 				.css("border-bottom-left-radius", o.borderRadius);
-			$("ul li:last-child a").css("border-top-right-radius", o.borderRadius)
+			$(this).find("li:last-child a").css("border-top-right-radius", o.borderRadius)
 				.css("border-bottom-right-radius", o.borderRadius);
 		});
 		
