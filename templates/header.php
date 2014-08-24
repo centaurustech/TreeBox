@@ -5,6 +5,7 @@
 
 <!--font for the navbar links-->
 <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+<link type="text/css" rel='stylesheet' href='css/mystyles/mainStyle.css' /><!--header style stuff-->
 
 <div id="header">
     <div id="logo">

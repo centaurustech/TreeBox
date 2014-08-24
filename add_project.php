@@ -8,16 +8,16 @@ session_start();
         <title>Add your project to TreeBox!</title>
     
     	<!-- style stuff -->
-        <link type="text/css" rel='stylesheet' href='css/mainstyle.css' />
-        <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet">
+        <link type="text/css" rel='stylesheet' href='css/mystyles/mainAddProjectStyle.css' /><!--add_project page's style stuff-->
+        <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet"> <!--jQuery UI style-->
         <!-- fonts -->
         
     	
     	<!-- JS and jQuery stuff -->
-    	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> <!--jQuery Library-->
         <script src="js/jquery.validate.min.js"></script> <!--Form validation-->
         <script type="text/javascript" src="js/jquery-ui.min.js"></script> <!--jQuery UI-->
-        <script src="https://maps.googleapis.com/maps/api/js"></script> <!--google maps API for location verification-->
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> <!--google maps places (for autocomplete and location verification)-->
     </head>
     <body>
         <div id="container">
@@ -77,18 +77,18 @@ session_start();
 	        $projectLocCountry = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['hidden_loc_country']))));
 	        $projectLocFormattedAddress = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['hidden_loc_formatted_address']))));
 	        
-	        //Format the Date
-	        $projectDate = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['project_date']))));
-	        $projectDate = date("Y-m-d", strtotime($projectDate));
-			
-			//Format the Time
+	        //Format the Time
 			$projectTimeMin = "";
 			if($_POST['select_minute'] == 0){
 				$projectTimeMin = "0" . $_POST['select_minute'];
 			} else
 				$projectTimeMin = $_POST['select_minute'];
-	        $projectTime = $_POST['select_hour'] . ':' . $projectTimeMin . $_POST['select_period'];
-    		
+	        $projectTime = $_POST['select_hour'] . ':' . $projectTimeMin . ' ' . $_POST['select_period'];
+
+	        //Make a DateTime object (NOTE that the time is also stored separately)
+	        $projectDate = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['project_date']))));
+	        $projectDate = new DateTime($projectDate . ' ' . $projectTime); //convert to date time formatting
+	        $projectDate = $projectDate->format('Y-m-d H:i'); //convert back to string (trust me this is necessary, mysql will not do it for you)
 	        
 	        //Define query (note that $userId is retrieved by header.php)
 	        $query = "INSERT INTO projects(project_name, user_id, project_description, project_datetime, project_time, 

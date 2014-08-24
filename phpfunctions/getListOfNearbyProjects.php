@@ -54,10 +54,15 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 			    )
 			) AS distance
 			FROM projects
+			WHERE hasExpired=0
 			HAVING distance < 25
 			ORDER BY distance ASC
 			LIMIT 0, 5"; 
 		if ($result = @mysql_query($query, $dbc)) {
+			if (mysql_num_rows($result)==0){ 
+				echo null; //send null as data 
+				exit(); //end script
+			}
 	        $projectInfoArray = array(); //multidimensional array
 	        while ($row = mysql_fetch_array($result)) {
 	        	/*if (isset($row['tags'])) { //If tags column is set for this project
@@ -65,8 +70,8 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 	            }*/
 	            //format the description
 	            $projectDescrip = $row['project_description'];
-	            if(strlen($projectDescrip) > 155){
-	            	$projectDescrip = substr($row['project_description'], 0, 155) . "...";
+	            if(strlen($projectDescrip) > 105){
+	            	$projectDescrip = substr($row['project_description'], 0, 105) . "...";
 	            }
 
 	            //get the proximity of project

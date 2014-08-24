@@ -8,7 +8,7 @@ $(document).ready(function() {
 		bgColor : '#005994',
 		color : 'white',
 		border: '1px solid #009AFF',
-		hoverBgColor : '#009AFF',
+		hoverBgColor : '#0071BD',
 		hoverColor : 'white',
 		hoverBorder: '1px solid white',
 		borderRadius: '.3em', //borderRadius only does the border of the whole list, not each link

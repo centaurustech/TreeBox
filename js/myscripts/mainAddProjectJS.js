@@ -3,12 +3,17 @@ $(document).ready(function() {
 	var geocoder = new google.maps.Geocoder();
 
 	/***************************add_project form*************************/
+    $("#project_name").focus();
+
 	//add required *
 	$(":text, #select_period, #project_description").after("<span class='form_required'>*</span>");
 	$("#project_description").next().css({ //aligns the <textarea> with the <span>*</span>
 		"display": "inline-block",
 		"vertical-align": "top"
 	});
+
+    var input = document.getElementById('project_loc');
+    autocomplete = new google.maps.places.Autocomplete(input);
 
 	$("#submit_project").button();
 
