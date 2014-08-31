@@ -8,12 +8,14 @@
 	include("mainfunctions.php"); //connects to database
 
 function print_array($array) {
-// Print a nicely formatted array representation (for debugging data)
-  echo '<pre>';
-  print_r($array);
-  echo '</pre>';
+	// Print a nicely formatted array representation (for debugging data)
+  	echo '<pre>';
+ 	print_r($array);
+ 	echo '</pre>';
 }
 
+
+//Vincenty formula for distance on earth from 2 points
 function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 	$earth_radius = 6371;
 	
@@ -37,7 +39,7 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 			"HAVING distance < 25" : 25 is mile radius
 		*/
 																						//keep this here comma at the end
-        $query = "SELECT project_id, user_id, project_name, project_description, location_lat, location_lng, 
+        $query = "SELECT project_id, user_id, project_name, project_description, project_datetime, project_time, location_lat, location_lng, 
 			(
 			    3959 * acos(
 			      	cos(
@@ -77,10 +79,16 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 	            //get the proximity of project
 	            $proximity = round(getDistance($row['location_lat'], $row['location_lng'], $latitude, $longitude), 1);
 
+	            //format datetime
+	            $dt = date_create($row['project_datetime']);
+				$date = date_format($dt, 'l m/d/Y');
+
 	            $projectInfoArray[] = array("project_id" => "{$row['project_id']}",
 	            	"user_id" => "{$row['user_id']}",
 	        		"project_name" => "{$row['project_name']}",
 	        		"project_description" => "{$projectDescrip}",
+	        		"project_date" => "{$date}",
+	        		"project_time" => "{$row['project_time']}",
 	        		"proximity_to_user" => "{$proximity}"
 	        	);
 	        } //End of while loop
@@ -94,7 +102,10 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 			"project_id" : project_id,
 			"user_id" : user_id,
     		"project_name" : project_name,
-    		"project_description" : project_description
+    		"project_description" : project_description,
+    		"project_date" => date,
+    		"project_time" =>  project_time,
+    		"proximity_to_user" => proximity of project (calculated by php script)
 	    }
 	    */
 	    echo json_encode($projectInfoArray); 

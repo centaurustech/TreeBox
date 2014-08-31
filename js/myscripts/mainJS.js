@@ -7,12 +7,14 @@ $(document).ready(function() {
 		letterSpacing: '.04em',
 		bgColor : '#005994',
 		color : 'white',
-		border: '1px solid #009AFF',
+		//border: '1px solid #009AFF',
 		hoverBgColor : '#0071BD',
 		hoverColor : 'white',
-		hoverBorder: '1px solid white',
-		borderRadius: '.3em', //borderRadius only does the border of the whole list, not each link
+		//hoverBorder: '1px solid white',
+		//borderRadius: '.3em', //borderRadius only does the border of the whole list, not each link
 		linkWidth : 'auto',
 		padding : '.7em'
 	});
+
+	$("div#header_bar").height($("#navbar_menu").outerHeight(true));
 }); //end document.ready()

@@ -18,17 +18,22 @@ function getNearbyProjs(latitude, longitude, markers){
 						"user_id" : user_id,
 			    		"project_name" : project_name,
 			    		"project_description" : project_description
+			    		"project_date" => date,
+			    		"project_time" =>  project_time,
 			    		"proximity_to_user" : proximity of project (calculated by php script)
 					*/
 					var projectName = value.project_name;
 					var projectDescrip = value.project_description;
 					var projectId = value.project_id;
+					var projectDate = value.project_date;
+					var projectTime = value.project_time;
 					var projectProx = value.proximity_to_user;
 					html +=	"<li><h2 class='nearby_projs_projectName'><a href='" + projectId + "'></a>" 
 								//link click event set below
 								+ projectName + "</h2>" 
 						+ "<p class='nearby_projs_projectDescrip'>" + projectDescrip + "</p>"
-						+ "<p class='nearby_projs_prox'>" + projectProx + " miles away</p></li>"
+						+ "<p class='nearby_projs_datetime'>" + projectTime + " on <i>" + projectDate + "</i></p>"
+						+ "<p class='nearby_projs_prox'><b>" + projectProx + " miles away</b></p></li>"
 				}); //end $.each
 				html += "</ul>";
 				$("#display_nearby_projs").html(html); 

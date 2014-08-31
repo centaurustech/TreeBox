@@ -1,0 +1,62 @@
+/*
+	TOC
+
+
+	1em = 93 px (for table stuff)
+*/
+
+div#page_content{
+	height: 90%; /*******change this value (remove it) if the elements in this div overflow this height********/
+}
+div#my_active_projs{
+	width: auto;
+}
+table#active_projs_table{
+	margin: 0 auto;
+}
+tbody#active_projs_tbody{
+
+}
+tr.active_projs_tr{
+
+}
+td.active_projs_td{
+	width: 25em;
+	border: 1px solid black;
+	padding: 0 1em;
+}
+h1.active_projs_projectName{
+	font-size: ;
+	margin-bottom: .3em;
+}
+a{
+	text-decoration: none;
+	color: #3789CC;
+}
+p.active_projs_projectDateTime{
+	text-align: right;
+	margin: .1em 0;
+	font-size: .9em;
+}
+p.active_projs_projectAddr{
+	text-align: right;
+	margin: .1em 0;
+	font-size: .9em;
+	font-weight: bold;
+}
+p.active_projs_projectDescrip{
+	margin: .3em 0;
+}
+p.edit_project_p{
+	text-align: right;
+}
+span.edit_link{
+	vertical-align: middle;
+	font-size: .9em;
+}
+img.edit_icon{
+	vertical-align: middle;
+	margin-left: .3em;
+	height: 1em;
+	width: 1em;
+}

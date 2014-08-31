@@ -1,6 +1,6 @@
 <?php 
 include("phpfunctions/mainfunctions.php"); 
-session_start();
+session_start(); //for facebook login (set up in "header.php")
 ?>
 
 <!DOCTYPE html>
@@ -31,18 +31,20 @@ session_start();
 			    <!--<div id="ads"></div>->
 			</div>-->
 
-			<div id="map_canvas"></div>
-			<!--see "js/myscripts/mainIndexJS.js" will display a custom message 
-				to this div if user clicks on a marker-->
-			<div id="map_message" style="display:none;"></div>
+            <div id="index_page_content">
+    			<div id="map_canvas"></div>
+    			<!--see "js/myscripts/mainIndexJS.js" will display a custom message 
+    				to this div if user clicks on a marker-->
+    			<div id="map_message" style="display:none;"></div>
 
-			<div id="projects_near_you">
-                <input type="text" name="location_search" id="location_search" class="location_search_controls" placeholder="Enter a location" style="display: none;">
-                
-                <h1 id='nearby_projs_heading'>Projects near you:</h1>
-                <div id="display_nearby_projs"> 
-                    Please enter a location on the map to find the nearest the projects
+    			<div id="projects_near_you">
+                    <input type="text" name="location_search" id="location_search" class="location_search_controls" placeholder="Enter a location" style="display: none;">
+                    
+                    <h1 id='nearby_projs_heading'>Projects near you:</h1>
+                    <div id="display_nearby_projs"> 
+                        <p id="location_prompt">Please enter a location on the map to find the nearest the projects</p>
+                    </div>
                 </div>
             </div>
-
+            
 <?php include("templates/footer.php"); ?>

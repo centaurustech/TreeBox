@@ -1,6 +1,6 @@
 <?php 
 include("phpfunctions/mainfunctions.php"); 
-session_start();
+session_start(); //for facebook login (set up in "header.php")
 ?>
 <!DOCTYPE html>
 <html>
@@ -113,7 +113,7 @@ session_start();
 	}//End of form submit if*/
 	include("templates/add_project_form.php"); 
 	?>
-</div><!--*********End container div***********-->
+</div><!--*********End add_project div***********-->
 
 <!--******-************************* include JS for add_project *************************************-->
 <script src="js/myscripts/mainAddProjectJS.js"></script>

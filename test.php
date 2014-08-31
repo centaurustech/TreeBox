@@ -11,3 +11,11 @@
 
 	echo $expiryDate . ' ' . $projectDate;
 ?>
+
+<script>
+	var jaja = "hello";
+</script>
+
+<script>
+	alert(jaja);
+</script>

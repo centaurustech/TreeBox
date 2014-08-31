@@ -18,7 +18,7 @@ function print_array($array) {
 //Check for expiry/set expiry
 $query = "UPDATE projects
 	SET hasExpired=1
-	WHERE project_datetime <= NOW() + INTERVAL 1 DAY";
+	WHERE project_datetime + INTERVAL 1 DAY <= NOW()"; //expires within 1 day
 executeQuery($query);
 
 
