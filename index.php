@@ -6,7 +6,7 @@ session_start(); //for facebook login (set up in "header.php")
 <!DOCTYPE html>
 <html>
     <head>
-        <title>TreeBox</title>
+        <title>TreeBoks</title>
     
     	<!-- style stuff -->
         <link type="text/css" rel='stylesheet' href='css/mystyles/mainIndexStyle.css' /> <!--this page's style stuff-->

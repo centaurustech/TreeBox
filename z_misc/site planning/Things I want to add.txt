@@ -1,7 +1,11 @@
 Facebook - like, comment, activity feed
 	FOR THE LIKE button and all social media plugins: the URL for the "like" should be the view_project (individual project showcase) page
 
+Project view page
+	google map of project location, directiosn from users location (or an inputted location), reviews, comments and social plugins for this project are on this page
+
 Allow uer to manage his or her projects (look back through past projects) and edit projects (cannot edit the date on "expired" projects)
+
 
 View the people "going" or "in" a project (this also means allowing people to "join" a project)
 

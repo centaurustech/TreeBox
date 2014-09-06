@@ -1,93 +1,3 @@
-function getNearbyProjs(latitude, longitude, markers){
-	$.ajax({
-        url: "phpfunctions/getListOfNearbyProjects.php",
-        type: "GET",
-        data: "userLat=" + latitude + "&userLng=" + longitude,
-        dataType: "json",
-		error: function(xhr, status, error) {
-			alert("Error: " + xhr.status + " - " + error);
-		},
-		success: function(data) {
-			if (data == null) {
-                $("#display_nearby_projs").html("<h3>There are no projects in this area. <a href='add_project.php'>Add one now!</a></h3>");
-            } else {
-				var html = "<ul id='nearby_projs_list'>";
-				$.each(data, function(index, value) {
-					/* data retrieved:
-						"project_id" : project_id,
-						"user_id" : user_id,
-			    		"project_name" : project_name,
-			    		"project_description" : project_description
-			    		"project_date" => date,
-			    		"project_time" =>  project_time,
-			    		"proximity_to_user" : proximity of project (calculated by php script)
-					*/
-					var projectName = value.project_name;
-					var projectDescrip = value.project_description;
-					var projectId = value.project_id;
-					var projectDate = value.project_date;
-					var projectTime = value.project_time;
-					var projectProx = value.proximity_to_user;
-					html +=	"<li><h2 class='nearby_projs_projectName'><a href='" + projectId + "'></a>" 
-								//link click event set below
-								+ projectName + "</h2>" 
-						+ "<p class='nearby_projs_projectDescrip'>" + projectDescrip + "</p>"
-						+ "<p class='nearby_projs_datetime'>" + projectTime + " on <i>" + projectDate + "</i></p>"
-						+ "<p class='nearby_projs_prox'><b>" + projectProx + " miles away</b></p></li>"
-				}); //end $.each
-				html += "</ul>";
-				$("#display_nearby_projs").html(html); 
-
-				//set the links to trigger the click event of the marker with the id = the link's href value	
-			    $("#projects_near_you a").click(function(evt){
-			    	evt.preventDefault(); //cancel default of link taking you to a new page
-			    });
-			    $("#projects_near_you li").click(function() {
-					var selectedMarkerId = $(this).find("a:first-child").attr("href");
-					
-					//loop through array of markers until the one with the id
-					var i;
-					for(i = 0; i < markers.length; ++i){
-						if(markers[i].id == selectedMarkerId){
-							//NOTE: triggered twice, just in case the marker is spiderfied
-							//in which case the first click would unspiderfy, and the second click would select that marker
-							google.maps.event.trigger(markers[i], 'click');
-							google.maps.event.trigger(markers[i], 'click');
-						}
-					}
-				});
-			} //end if data null
-		} //end success
-    }); //end ajax*/
-}
-
-function setBoundsOnMap(map){
-	/*******------------------ vertically bound the map, restrict user from scrolling outside---------------------**/
-   	var strictBounds = new google.maps.LatLngBounds(
-     	new google.maps.LatLng(-73, -170), //sw corner the lng value doesnt really matter
-     	new google.maps.LatLng(73, 170) //ne corner the lng value doesnt really matter
-   	);
-	// Listen for the dragend event
-	google.maps.event.addListener(map, 'dragend', function() {
-    	if (strictBounds.contains(map.getCenter())) return;
-    	// We're out of bounds - Move the map back within the bounds (only vertical bounds)
-     	var c = map.getCenter(),
-        	x = c.lng(),
-         	y = c.lat(),
-         	//maxX = strictBounds.getNorthEast().lng(),
-         	maxY = strictBounds.getNorthEast().lat(),
-         	//minX = strictBounds.getSouthWest().lng(),
-         	minY = strictBounds.getSouthWest().lat();
-
-     	//if (x < minX) x = minX;
-     	//if (x > maxX) x = maxX;
-     	if (y < minY) y = minY;
-     	if (y > maxY) y = maxY;
-
-     	map.setCenter(new google.maps.LatLng(y, x));
-   	}); //end of bounding
-}
-
 function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerSpiderfier
 	/***-------------------------------populating the map with markers---------------------------***/
     //send ajax requesting markers
@@ -166,10 +76,11 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 							overlay.draw = function() {
 								//actual message
 								$("#map_message").html(
-									"<h1 id='message_projectName'>" + projectName + "</h1>" 
+									"<h1 id='message_projectName'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>" + projectName + "</a></h1>" 
 									+ "<p id='message_projectDate'><b>" + projectTime + "</b> on <i>" + projectDate + "</i></p>"
 									+ "<p id='message_projectAddress'>@ <b>" + projectAddr + "</b></p>"
 									+ "<p id='message_projectDescription'>" + projectDescrip + "</p>"
+									+ "<p id='message_viewProjectPageLink'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>Get directions/Go to project page</a><br/></p>"
 								); 
 								$("#map_message").show();
 
@@ -196,6 +107,96 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 			}); //end $.each()
 		} //end success for getting all the markers
     }); //end ajax for getting all the markers
+}
+
+function setBoundsOnMap(map){
+	/*******------------------ vertically bound the map, restrict user from scrolling outside---------------------**/
+   	var strictBounds = new google.maps.LatLngBounds(
+     	new google.maps.LatLng(-73, -170), //sw corner the lng value doesnt really matter
+     	new google.maps.LatLng(73, 170) //ne corner the lng value doesnt really matter
+   	);
+	// Listen for the dragend event
+	google.maps.event.addListener(map, 'dragend', function() {
+    	if (strictBounds.contains(map.getCenter())) return;
+    	// We're out of bounds - Move the map back within the bounds (only vertical bounds)
+     	var c = map.getCenter(),
+        	x = c.lng(),
+         	y = c.lat(),
+         	//maxX = strictBounds.getNorthEast().lng(),
+         	maxY = strictBounds.getNorthEast().lat(),
+         	//minX = strictBounds.getSouthWest().lng(),
+         	minY = strictBounds.getSouthWest().lat();
+
+     	//if (x < minX) x = minX;
+     	//if (x > maxX) x = maxX;
+     	if (y < minY) y = minY;
+     	if (y > maxY) y = maxY;
+
+     	map.setCenter(new google.maps.LatLng(y, x));
+   	}); //end of bounding
+}
+
+function getNearbyProjs(latitude, longitude, markers){
+	$.ajax({
+        url: "phpfunctions/getListOfNearbyProjects.php",
+        type: "GET",
+        data: "userLat=" + latitude + "&userLng=" + longitude,
+        dataType: "json",
+		error: function(xhr, status, error) {
+			alert("Error: " + xhr.status + " - " + error);
+		},
+		success: function(data) {
+			if (data == null) {
+                $("#display_nearby_projs").html("<h3>There are no projects in this area. <a href='add_project.php'>Add one now!</a></h3>");
+            } else {
+				var html = "<ul id='nearby_projs_list'>";
+				$.each(data, function(index, value) {
+					/* data retrieved:
+						"project_id" : project_id,
+						"user_id" : user_id,
+			    		"project_name" : project_name,
+			    		"project_description" : project_description
+			    		"project_date" => date,
+			    		"project_time" =>  project_time,
+			    		"proximity_to_user" : proximity of project (calculated by php script)
+					*/
+					var projectName = value.project_name;
+					var projectDescrip = value.project_description;
+					var projectId = value.project_id;
+					var projectDate = value.project_date;
+					var projectTime = value.project_time;
+					var projectProx = value.proximity_to_user;
+					html +=	"<li><h2 class='nearby_projs_projectName'><a href='" + projectId + "'></a>" 
+								//link click event set below
+								+ projectName + "</h2>" 
+						+ "<p class='nearby_projs_projectDescrip'>" + projectDescrip + "</p>"
+						+ "<p class='nearby_projs_datetime'>" + projectTime + " on <i>" + projectDate + "</i></p>"
+						+ "<p class='nearby_projs_prox'><b>" + projectProx + " miles away</b></p></li>"
+				}); //end $.each
+				html += "</ul>";
+				$("#display_nearby_projs").html(html); 
+
+				//set the links to trigger the click event of the marker with the id = the link's href value	
+			    $("#projects_near_you a").click(function(evt){
+			    	evt.preventDefault(); //cancel default of link taking you to a new page
+			    });
+			    $("#projects_near_you li").click(function() {
+					var selectedMarkerId = $(this).find("a:first-child").attr("href");
+					
+					//loop through array of markers until the one with the id
+					var i;
+					for(i = 0; i < markers.length; ++i){
+						if(markers[i].id == selectedMarkerId){
+							//NOTE: triggered twice, just in case the marker is spiderfied
+							//in which case the first click would unspiderfy, and the second click would select that marker
+							google.maps.event.trigger(markers[i], 'click');
+							google.maps.event.trigger(markers[i], 'click');
+						}
+					}
+				});
+			} //end if data null
+		} //end success
+    }); //end ajax*/
 }
 
 $(document).ready(function() {

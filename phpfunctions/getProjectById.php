@@ -24,6 +24,9 @@ function print_array($array) {
 			
 			$dt = date_create($row['project_datetime']);
 			$date = date_format($dt, 'l F jS, Y');
+			$projectHasExpired = false;
+		    if($row['hasExpired'] == 1)
+		        $projectHasExpired = true;
 			//ie. g:ia \o\n l jS F Y
 			//output = 5:45pm on Saturday 24th March 2012
 
@@ -36,6 +39,7 @@ function print_array($array) {
         		"project_description" => "{$row['project_description']}",
         		"project_date" => "{$date}",
         		"project_time" => "{$row['project_time']}",
+        		"project_hasExpired" => "{$row['hasExpired']}",
         		"project_address" => "{$row['loc_formatted_address']}",
         		"lat" => "{$row['location_lat']}",
         		"lng" => "{$row['location_lng']}");
@@ -52,6 +56,7 @@ function print_array($array) {
     		"project_description" : project_description,
     		"project_date" : project_date (formatted),
     		"project_time" : project_time,
+    		"project_hasExpired" => hasExpired (boolean)
     		"project_address" : project_address (formatted), 
 			"lat" : location_lat,
 			"lng" : location_lng

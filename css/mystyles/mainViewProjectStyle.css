@@ -1,0 +1,51 @@
+
+/*Everything goes in here*/
+div#page_content{
+	height: 90%; /*******change this value (remove it) if the elements in this div overflow this height
+	this just basically makes the footer stay at the bottom of the fixed page********/
+}
+div#map_container{
+	height: 100%;
+	width: 60%;
+}
+div#map_canvas{
+    float: left;
+    width: 69%;
+    height: 100%;
+    background-color: gray;
+}
+.location_search_controls {
+    margin-top: 16px;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+#location_search {
+    background-color: #fff;
+    padding: 0 11px 0 13px;
+    width: 400px;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 300;
+    text-overflow: ellipsis;
+}
+#location_search:focus {
+    border-color: #4d90fe;
+    margin-left: -1px;
+    padding-left: 14px;  /* Regular padding-left + 1. */
+    width: 401px;
+}
+div#map_directions{
+	margin-left: .5em;
+	width: 30%;
+	height: 100%; /*80% of the page_content div*/
+	float: left;
+	overflow: auto;
+}
+p#map_directions_prompt{
+	margin-left: .3em;
+}

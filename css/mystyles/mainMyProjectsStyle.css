@@ -6,7 +6,8 @@
 */
 
 div#page_content{
-	height: 90%; /*******change this value (remove it) if the elements in this div overflow this height********/
+	height: 90%; /*******change this value (remove it) if the elements in this div overflow this height
+	this just basically makes the footer stay at the bottom of the fixed page********/
 }
 div#my_active_projs{
 	width: auto;
