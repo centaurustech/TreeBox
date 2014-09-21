@@ -82,7 +82,15 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 									+ "<p id='message_projectDescription'>" + projectDescrip + "</p>"
 									+ "<p id='message_viewProjectPageLink'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>Get directions/Go to project page</a><br/></p>"
 								); 
+								FB.getLoginStatus(function(response) { //just for debugging in console
+								  	if (response.status === 'connected') {
+								    	$("#map_message").append( /*###################the below URL will need to be changed########################*/
+								    		"<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" + marker.id + "' layout='standard' action='like' show_faces='true' share='true'></fb:like></p>"
+								    	);
+								  	}
+								});
 								$("#map_message").show();
+								FB.XFBML.parse(); 
 
 								/*get the position for the map_message
 									(needs to be after there is something to show*/

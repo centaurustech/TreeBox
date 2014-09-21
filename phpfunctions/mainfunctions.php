@@ -19,15 +19,17 @@ function deletePoll($poll_id) {
     }
 }
 
-function executeQuery($query, $success_message = 'none') {
+function executeQuery($query, $success_message = 'none', $display_error_message = true) {
     global $dbc;
     @mysql_query($query, $dbc);
 
     if($success_message != 'none'){ //function called with a message
         if (mysql_affected_rows($dbc) == 1) { //something changed
-            print "<p style='border: green; color: green;'>{$success_message}</p>";
+            print "<p style='border: green; color: green;'><img src='images/check_icon.png' id='check_icon' style='width: 1em; height: 1em'/> {$success_message}</p>";
         } else {
-            print '<p style="border: red; color: red;">Error, something occurred which prevented the action from executing. ' . mysql_error($dbc) . '</p>';
+            if($display_error_message){ 
+                print '<p style="border: red; color: red;">Error, something occurred which prevented the action from executing. ' . mysql_error($dbc) . '</p>';
+            }
         }
     }
 }

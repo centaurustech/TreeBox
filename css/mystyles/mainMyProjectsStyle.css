@@ -1,32 +1,44 @@
 /*
 	TOC
 
-
+	1em = 29px (for the width of span elements)
 	1em = 93 px (for table stuff)
 */
 
 div#page_content{
-	height: 90%; /*******change this value (remove it) if the elements in this div overflow this height
+	height: auto; /*******change this value (remove it) if the elements in this div overflow this height
 	this just basically makes the footer stay at the bottom of the fixed page********/
 }
 div#my_active_projs{
 	width: auto;
+	margin-bottom: 1em; /*spaces away from project memorial*/
 }
-table#active_projs_table{
+span.projs_label{
+	margin: 1em;
+	width: 7.5em;
+	font-size: 1.8em;
+	display: inline-block;
+}
+table#projs_table{
 	margin: 0 auto;
+	display: inline-block;
+	vertical-align: top;
 }
-tbody#active_projs_tbody{
+tbody#projs_tbody{
 
 }
-tr.active_projs_tr{
+tr.projs_tr{
 
 }
-td.active_projs_td{
+td.projs_td{
 	width: 25em;
-	border: 1px solid black;
+	border: 1px solid green;
 	padding: 0 1em;
 }
-h1.active_projs_projectName{
+td.proj_memorial{
+	border: 1px solid gray;
+}
+h1.projs_projectName{
 	font-size: ;
 	margin-bottom: .3em;
 }
@@ -34,18 +46,18 @@ a{
 	text-decoration: none;
 	color: #3789CC;
 }
-p.active_projs_projectDateTime{
+p.projs_projectDateTime{
 	text-align: right;
 	margin: .1em 0;
 	font-size: .9em;
 }
-p.active_projs_projectAddr{
+p.projs_projectAddr{
 	text-align: right;
 	margin: .1em 0;
 	font-size: .9em;
 	font-weight: bold;
 }
-p.active_projs_projectDescrip{
+p.projs_projectDescrip{
 	margin: .3em 0;
 }
 p.edit_project_p{

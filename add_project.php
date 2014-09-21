@@ -11,13 +11,14 @@ session_start(); //for facebook login (set up in "header.php")
         <link type="text/css" rel='stylesheet' href='css/mystyles/mainAddProjectStyle.css' /><!--add_project page's style stuff-->
         <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet"> <!--jQuery UI style-->
         <!-- fonts -->
-        
+        <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
     	
     	<!-- JS and jQuery stuff -->
     	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> <!--jQuery Library-->
         <script src="js/jquery.validate.min.js"></script> <!--Form validation-->
         <script type="text/javascript" src="js/jquery-ui.min.js"></script> <!--jQuery UI-->
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> <!--google maps places (for autocomplete and location verification)-->
+    	<script src="js/myscripts/mainAddProjectJS.js"></script> <!--******************************** include JS for add_project *************************************-->
     </head>
     <body>
         <div id="container">
@@ -26,7 +27,7 @@ session_start(); //for facebook login (set up in "header.php")
 <div id="add_project">
 	<?php
 	$projectSubmitted = false;
-	if (!empty($_POST)){ //Check if add_project_form.php is submitted
+	if (!empty($_POST)){ //Check if project_form.php is submitted
 		//debugging $projectLocLat = $_POST['hidden_loc_address']; print $projectLocLat;}
 		//Validate form
 	    $problems = false;
@@ -95,7 +96,7 @@ session_start(); //for facebook login (set up in "header.php")
 	        		location_lat, location_lng, location_address, location_city, location_state, location_zipcode, 
 	        		location_country, loc_formatted_address) 
 	            VALUES('$projectName', '$userId', '$projectDescription', '$projectDate', '$projectTime',  
-	            	'$projectLocLat', ' $projectLocLng', '$projectLocAddress', '$projectLocCity', '$projectLocState', '$projectLocZip', 
+	            	'$projectLocLat', '$projectLocLng', '$projectLocAddress', '$projectLocCity', '$projectLocState', '$projectLocZip', 
 	            	'$projectLocCountry', '$projectLocFormattedAddress')";
 	        executeQuery($query, "Project added to the map!");
 
@@ -108,14 +109,18 @@ session_start(); //for facebook login (set up in "header.php")
 	    	} else
 	    		$pluralErrors = " are {$errorCounter} errors";
 	        print "<p class='error'>Please make sure you filled out the entire form correctly. There {$pluralErrors}.</p>
-	        	<ul class='ul_error'>{$error_message}</ul>";
+	        	<ul class='ul_error'>{$error_message}</ul><br/>";
 	    } //end of query if
 	}//End of form submit if*/
-	include("templates/add_project_form.php"); 
+
+	$project_form_action = "add_project.php";
+	$project_form_id = "add_project_form";
+	$project_form_legend = "ADD YOUR PROJECT";
+	$project_form_element_class = "add_project";
+	$project_form_submit_button_value = "Add this project!";
+	include("templates/project_form.php"); 
 	?>
 </div><!--*********End add_project div***********-->
 
-<!--******-************************* include JS for add_project *************************************-->
-<script src="js/myscripts/mainAddProjectJS.js"></script>
 
 <?php include("templates/footer.php"); ?>

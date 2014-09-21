@@ -35,17 +35,18 @@ session_start(); //for facebook login (set up in "header.php")
                         ORDER BY project_datetime ASC"; 
                 if ($result = @mysql_query($query, $dbc)) { //successful query
                     echo '<div id="my_active_projs">
+                            <span class="projs_label">My active projects</span>
                             <!--Table of projects-->
-                            <table id="active_projs_table">
-                                <tbody id="active_projs_tbody">';
+                            <table id="projs_table">
+                                <tbody id="projs_tbody">';
 
                     $colCount = 0; // limit the number of columns in a table row
                     while ($row = mysql_fetch_array($result)) {
                         if($colCount == 0){
-                            echo '<tr class="active_projs_tr">';
+                            echo '<tr class="projs_tr">';
                         }
 
-                        echo "<td class='active_projs_td'>";
+                        echo "<td class='projs_td'>";
 
                         $projectId = $row['project_id'];
                         $projectName = $row['project_name'];
@@ -62,11 +63,69 @@ session_start(); //for facebook login (set up in "header.php")
                         $dt = date_create($row['project_datetime']);
                         $date = date_format($dt, 'l F jS, Y');
 
-                        echo "<h1 class='active_projs_projectName'><a href='view_project.php?proj_id=" . $projectId . "'>" 
+                        echo "<h1 class='projs_projectName'><a href='view_project.php?proj_id=" . $projectId . "'>" 
                             . $projectName . "</a></h1>"
-                            . "<p class='active_projs_projectDateTime'>" . $projectTime . " on <i>" . $date . "</i></p>"
-                            . "<p class='active_projs_projectAddr'>@ " . $projectAddr . "</p>"
-                            . "<p class='active_projs_projectDescrip'>" . $projectDescrip . "</p>"
+                            . "<p class='projs_projectDateTime'>" . $projectTime . " on <i>" . $date . "</i></p>"
+                            . "<p class='projs_projectAddr'>@ " . $projectAddr . "</p>"
+                            . "<p class='projs_projectDescrip'>" . $projectDescrip . "</p>"
+                            . "<p class='edit_project_p'><a href='edit_project.php?proj_id=" . $projectId . "'><span class='edit_link'>Edit</span><img src='images/edit_project_icon.png' class='edit_icon'/><a/></p>";
+                        
+                        echo "</td>";
+
+                        $colCount++;
+                        if($colCount > 2){ //limit of 3 projects listed in 1 table row
+                            echo "</tr>";
+                            $colCount = 0; //reset counter
+                        }
+                    } //End of while loop* /
+
+                    echo '</tbody></table></div>'; //end table and div
+                } else { //Query didn't run (later redirect to an error page) /*#######################change this to error page##########################*/
+                    print '<p style="border: red; color: red;">Error, something occurred which prevented the query from executing. ' 
+                        . mysql_error($dbc) . '</p>';
+                }
+
+
+                /*-----------------------------Get users past projects (expired)-------------------------------*/
+                //retireve user project memorial
+                $query = "SELECT * FROM projects
+                        WHERE user_id = {$userId} AND hasExpired = 1
+                        ORDER BY project_datetime DESC"; 
+                if ($result = @mysql_query($query, $dbc)) { //successful query
+                    echo '<div id="proj_memorial">
+                            <span class="projs_label">Project memorial</span>
+                            <!--Table of projects-->
+                            <table id="projs_table">
+                                <tbody id="projs_tbody">'; 
+
+                    $colCount = 0; // limit the number of columns in a table row
+                    while ($row = mysql_fetch_array($result)) {
+                        if($colCount == 0){
+                            echo '<tr class="projs_tr">';
+                        }
+
+                        echo "<td class='projs_td proj_memorial'>"; //note that the table data here has TWO classes
+
+                        $projectId = $row['project_id'];
+                        $projectName = $row['project_name'];
+                        $projectTime = $row['project_time'];
+                        $projectAddr = $row['loc_formatted_address'];
+            
+                        //format the description
+                        $projectDescrip = $row['project_description'];
+                        if(strlen($projectDescrip) > 170){
+                            $projectDescrip = substr($row['project_description'], 0, 170) . "...";
+                        }
+
+                        //format datetime
+                        $dt = date_create($row['project_datetime']);
+                        $date = date_format($dt, 'l F jS, Y');
+
+                        echo "<h1 class='projs_projectName'><a href='view_project.php?proj_id=" . $projectId . "'>" 
+                            . $projectName . "</a></h1>"
+                            . "<p class='projs_projectDateTime'>" . $projectTime . " on <i>" . $date . "</i></p>"
+                            . "<p class='projs_projectAddr'>@ " . $projectAddr . "</p>"
+                            . "<p class='projs_projectDescrip'>" . $projectDescrip . "</p>"
                             . "<p class='edit_project_p'><a href='edit_project.php?proj_id=" . $projectId . "'><span class='edit_link'>Edit</span><img src='images/edit_project_icon.png' class='edit_icon'/><a/></p>";
                         
                         echo "</td>";

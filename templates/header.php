@@ -75,11 +75,16 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	use Facebook\GraphUser;
 	use Facebook\GraphSessionInfo;
 
+		$allowedPagesWithoutLogin = array( /*###########################this needs to be updated############*/
+			"/TreeBox/index.php",
+			"/TreeBox/view_project.php"
+		);
+
 	    // Initialize application by Application ID and Secret
 	    FacebookSession::setDefaultApplication(API_KEY, SECRET);
 	     
 	    // Login Healper with redirect URI
-	    $helper = new FacebookRedirectLoginHelper( 'http://localhost/TreeBox/index.php' ); /*###########################this needs to be updated############*/
+	    $helper = new FacebookRedirectLoginHelper( 'http://localhost/TreeBox/index.php' ); 
 
 	    // see if a existing session exists
 	    if ( isset( $_SESSION ) && isset( $_SESSION['fb_token'] ) ) {
@@ -99,11 +104,20 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	     
 	    if ( !isset( $session ) || $session === null ) {
 		    // no session exists
-	    	if($_SERVER['PHP_SELF'] != '/TreeBox/index.php'){ /*###########################this needs to be updated############*/
-	    		/* Redirect browser to home page if not logged in and not on homepage*/
+
+	    	//redirect if not logged in and viewing an "illegal page" (see array $allowedPagesWithoutLogin above for "legal pages")
+	    	$redirect = true;
+		  	for($i = 0; $i < count($allowedPagesWithoutLogin); $i++){
+		    	if($_SERVER['PHP_SELF'] == $allowedPagesWithoutLogin[$i]){
+		    		$redirect = false;
+		    	}
+		    }
+		    if($redirect){
+			    /* Redirect browser to home page if not logged in and not on homepage*/
 	    		header("Location: http://localhost/TreeBox/index.php"); /*###########################this needs to be updated############*/
 				exit();
-	    	}
+			}
+
 		    try {
 		    	$session = $helper->getSessionFromRedirect();
 		    } catch( FacebookRequestException $ex ) {
@@ -170,14 +184,14 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	      	// print logout url using session and redirect_uri (logout.php page should destroy the session)
       		echo '<div id="fb_user">
       				<div id="user_profile" class="fb_user_button">
-	      				<a href="#"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
+	      				<a href="my_projects.php"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
 	      				<span class="fb_title">' . $user->getFirstName() . '</span></a>
 	      			</div>
 		      		<div id="block_logout" class="fb_user_button">
 	      				<a href="' . $helper->getLogoutUrl($session, 'http://localhost/TreeBox/facebook/logout.php')  /*###########################this needs to be updated############*/
 	      				. '"><span class="fb_title">Logout</span></a>
 		      		</div>
-	      		</div>';
+	      		</div>'; /*---------------the propic is linked to my_projects.php for now-----------------*/
 	  	} else { //session does not exist
 	      	// show login url
 	  		echo '<div class="block_login">

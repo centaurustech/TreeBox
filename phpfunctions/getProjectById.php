@@ -22,6 +22,12 @@ function print_array($array) {
         if ($result = @mysql_query($query, $dbc)) {
             $row = mysql_fetch_array($result);
 			
+			//format the description
+            $projectDescrip = $row['project_description'];
+            if(strlen($projectDescrip) > 185){
+                $projectDescrip = substr($row['project_description'], 0, 185) . "...";
+            }
+
 			$dt = date_create($row['project_datetime']);
 			$date = date_format($dt, 'l F jS, Y');
 			$projectHasExpired = false;
@@ -30,15 +36,22 @@ function print_array($array) {
 			//ie. g:ia \o\n l jS F Y
 			//output = 5:45pm on Saturday 24th March 2012
 
+			$now = date('m/d/Y h:i:s a', time()); //current date time
+			$secondsUntilProject = strtotime($row['project_datetime']) - strtotime($now); //difference in seconds
+			$daysUntilProject = round($secondsUntilProject / 86400, 0); //number of days
+			$hoursUntilProject = round($secondsUntilProject / 3600, 0);
+
             /*if (isset($row['tags'])) { //If tags column is set for this project
                 $tags = $row['tags']; //and add to array
             }*/
             $projectInfoArray = array("project_id" => "{$row['project_id']}",
             	"user_id" => "{$row['user_id']}",
         		"project_name" => "{$row['project_name']}",
-        		"project_description" => "{$row['project_description']}",
+        		"project_description" => $projectDescrip,
         		"project_date" => "{$date}",
         		"project_time" => "{$row['project_time']}",
+        		"days_until_project" => $daysUntilProject,
+        		"hours_until_project" => $hoursUntilProject,
         		"project_hasExpired" => "{$row['hasExpired']}",
         		"project_address" => "{$row['loc_formatted_address']}",
         		"lat" => "{$row['location_lat']}",
@@ -56,6 +69,8 @@ function print_array($array) {
     		"project_description" : project_description,
     		"project_date" : project_date (formatted),
     		"project_time" : project_time,
+    		"days_until_project" => daysUntilProject,
+    		"hours_until_project" => hoursUntilProject,
     		"project_hasExpired" => hasExpired (boolean)
     		"project_address" : project_address (formatted), 
 			"lat" : location_lat,

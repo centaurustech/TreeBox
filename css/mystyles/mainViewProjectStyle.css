@@ -4,9 +4,40 @@ div#page_content{
 	height: 90%; /*******change this value (remove it) if the elements in this div overflow this height
 	this just basically makes the footer stay at the bottom of the fixed page********/
 }
+div#project_info{
+    width: 38%;
+    height: 100%;
+    float: left;
+    padding: 0 1em;
+    overflow-y: scroll;
+}
+h1#display_projectName{
+
+}
+p#display_projectDateTime{
+    text-align: right;
+    margin: .1em 0;
+    font-size: ;
+}
+p#display_projectAddr{
+    text-align: right;
+    margin: .1em 0;
+    font-size: ;
+    font-weight: bold;
+}
+p#display_projectHost{
+    text-align: right;
+    margin: .1em 0;
+    font-size: ;
+}
+p#display_projectDescript{
+
+}
+
 div#map_container{
 	height: 100%;
 	width: 60%;
+    float: right;
 }
 div#map_canvas{
     float: left;

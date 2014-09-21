@@ -40,6 +40,7 @@ div#map_message {
     border: 2px black solid;
     border-radius: 10px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 h1#message_projectName{
     margin-bottom: 0;
@@ -62,6 +63,9 @@ p#message_projectDescription{
 p#message_viewProjectPageLink{
     margin-top: .4em;
     text-align: right;
+}
+p#message_fbShareLike{
+    width: 70%;
 }
 /*-----------------------projects_near_you div----------------------*/
 div#projects_near_you{

@@ -1,37 +1,40 @@
 $(document).ready(function() {
-	/******************** MAP stuff********************/	
-	var geocoder = new google.maps.Geocoder(); //auto complete in location input prompt
+    /******************** MAP stuff********************/    
+    var geocoder = new google.maps.Geocoder(); //auto complete in location input prompt
 
-	/***************************add_project form*************************/
+    /***************************edit_project form*************************/
     $("#project_name").focus();
 
-	//add required *
-	$(":text, #select_period, #project_description").after("<span class='form_required'>*</span>");
-	$("#project_description").next().css({ //aligns the <textarea> with the <span>*</span>
-		"display": "inline-block",
-		"vertical-align": "top"
-	});
+    //add the required sign "*"
+    $(":text, #select_period, #project_description").after("<span class='form_required'>*</span>");
+    $("#project_description").next().css({ //aligns the <textarea> with the <span>*</span>
+        "display": "inline-block",
+        "vertical-align": "top"
+    });
 
     var input = document.getElementById('project_loc');
     autocomplete = new google.maps.places.Autocomplete(input);
 
-	$("#submit_project").button();
+    /*jQuery UI styling*/
+    $("#submit_project").button();
+    $("button#delete_project").button(); 
+    if ($('#project_date').length) { //if project_date edit element exists, won't exist if project is expired
+        $("#project_date").datepicker({
+            showOn: "button",
+            buttonImage: "images/calendar.gif",
+            buttonImageOnly: true,
+            buttonText: "Select date",
+            minDate: new Date(), //sets the minimum date to today with a new Date object
+        });
+    }
 
-	$("#project_date").datepicker({
-		showOn: "button",
-      	buttonImage: "images/calendar.gif",
-      	buttonImageOnly: true,
-      	buttonText: "Select date",
-      	minDate: new Date(), //sets the minimum date to today with a new Date object
-	});
-
-	/*--------------Validate the form--------------*/
-	$("div.error").hide(); //hide the error hint message
-	
+    /*--------------Validate the form--------------*/
+    $("div.error").hide(); //hide the error hint message
+    
     var canSubmit = false;
-	$("#add_project_form").submit(function(event) {
-		var isValid = true;
-		var errorCounter = 0; //keep track of form errors
+    $("#edit_project_form").submit(function(event) {
+        var isValid = true;
+        var errorCounter = 0; //keep track of form errors
 
         //Validate function
         var validateClear = function(form_element, formElementVal){
@@ -118,49 +121,51 @@ $(document).ready(function() {
                     
                     canSubmit = true;
                     if(canSubmit && isValid){
-                        $("#add_project_form").trigger('submit');
+                        $("#edit_project_form").trigger('submit');
                     }
                 }
             });
         }
 
-        // validate the project_date entry
-        var datePattern = /^((((0[13578])|([13578])|(1[02]))[\/](([1-9])|([0-2][0-9])|(3[01])))|(((0[469])|([469])|(11))[\/](([1-9])|([0-2][0-9])|(30)))|((2|02)[\/](([1-9])|([0-2][0-9]))))[\/]\d{4}$|^\d{4}$/;
-        var projectDate = $("#project_date").val().trim();
-        if (projectDate == "") {
-        	$("#project_date").next().next().text("Please enter the date of your project."); //need double next()'s because of neighbor calendar img
-        	$("#project_date").attr("style", "border: 1px solid red");
-        	isValid = false;
-        	errorCounter++;
-        } else if(!datePattern.test(projectDate)) { //make sure valid date format
-            $("#project_date").next().next().text("Please enter a valid date (mm/dd/yyyy).");
-            $("#project_date").attr("style", "border: 1px solid red");
-            isValid = false;
-            errorCounter++;
-       	} else {
-        	$("#project_date").val(projectDate); //sticky
-        	$("#project_date").removeAttr("style"); //remove highlight
-        	$("#project_date").next().next().text("");
+        if ($('#project_date').length) { //if project_date edit element exists, won't if project is expired
+            // validate the project_date entry
+            var datePattern = /^((((0[13578])|([13578])|(1[02]))[\/](([1-9])|([0-2][0-9])|(3[01])))|(((0[469])|([469])|(11))[\/](([1-9])|([0-2][0-9])|(30)))|((2|02)[\/](([1-9])|([0-2][0-9]))))[\/]\d{4}$|^\d{4}$/;
+            var projectDate = $("#project_date").val().trim();
+            if (projectDate == "") {
+                $("#project_date").next().next().text("Please enter the date of your project."); //need double next()'s because of neighbor calendar img
+                $("#project_date").attr("style", "border: 1px solid red");
+                isValid = false;
+                errorCounter++;
+            } else if(!datePattern.test(projectDate)) { //make sure valid date format
+                $("#project_date").next().next().text("Please enter a valid date (mm/dd/yyyy).");
+                $("#project_date").attr("style", "border: 1px solid red");
+                isValid = false;
+                errorCounter++;
+            } else {
+                $("#project_date").val(projectDate); //sticky
+                $("#project_date").removeAttr("style"); //remove highlight
+                $("#project_date").next().next().text("");
+            }
         }
 
         // prevent the default action of submitting the form if any entries are invalid 
         if (isValid == false) {
-        	event.preventDefault();
+            event.preventDefault();
 
-        	var pluralFields = " field. It has";
-        	if(errorCounter > 1)
-        		pluralFields = " fields. They have";
-        	var message = 'You missed ' + errorCounter + pluralFields + ' been highlighted'
-		    $("div.error span").html(message);
-		    $("div.error").show();
+            var pluralFields = " field. It has";
+            if(errorCounter > 1)
+                pluralFields = " fields. They have";
+            var message = 'You missed ' + errorCounter + pluralFields + ' been highlighted'
+            $("div.error span").html(message);
+            $("div.error").show();
 
-		    errorCounter = 0; //reset error counter
+            errorCounter = 0; //reset error counter
         } else {
             if(!canSubmit){
                 event.preventDefault();
-                $("#add_project_form").unbind('submit');
+                $("#edit_project_form").unbind('submit');
             }
             $("div.error").hide();
         }
-    });	// end submit
+    }); // end submit
 }); //end document.ready()

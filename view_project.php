@@ -2,7 +2,6 @@
 include("phpfunctions/mainfunctions.php"); //connects to database
 session_start(); //for facebook login (set up in "header.php")
 
-
 $projectId = $_GET['proj_id'];  
 
 $query = "SELECT * FROM projects
@@ -10,13 +9,10 @@ $query = "SELECT * FROM projects
 if ($result = @mysql_query($query, $dbc)) { //successful query
     $row = mysql_fetch_array($result);
 
-    $projectHost = $row['user_id'];
+    $projectUserId = $row['user_id'];
     $projectName = $row['project_name'];
     //format the description
     $projectDescrip = $row['project_description'];
-    if(strlen($projectDescrip) > 170){
-        $projectDescrip = substr($row['project_description'], 0, 170) . "...";
-    }
 
     /*project datetime stuff*/
     $projectTime = $row['project_time'];
@@ -34,6 +30,14 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 } else { //Query didn't run (later redirect to an error page) /*#######################change this to error page##########################*/
     //redirect (accessed page incorrectly)
     header("Location: http://localhost/TreeBox/index.php"); /*###########################this needs to be updated############*/
+}
+
+//Get host user's name:
+$query = "SELECT * FROM users
+        WHERE user_id = {$projectUserId}"; 
+if ($result = @mysql_query($query, $dbc)) { //successful query
+    $row = mysql_fetch_array($result);
+    $projectHost = $row['first_name'] . " " . $row['last_name'];
 }
 
 ?>
@@ -59,8 +63,20 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 
                 var originMarker = new google.maps.Marker({
                     position: originLocation, 
-                    title: "this is you",
+                    title: "Start location",
+                    icon: "images/marker_directions_icon_start.png",
                     map: map
+                });
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'latLng': originLocation}, function(results){
+                    var originAddr = results[0].formatted_address;
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: originAddr,
+                        maxWidth: 150
+                    });
+                    var originMarkerListener = google.maps.event.addListener(originMarker, "click", function(event){
+                        infoWindow.open(map, originMarker);
+                    });
                 });
 
                 var marker1 = originMarker;
@@ -81,7 +97,9 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                 });
             }
             $(document).ready(function(){
-                var directionsRenderer = new google.maps.DirectionsRenderer(); //passed into the getDirections() calls below 
+                var directionsRenderer = new google.maps.DirectionsRenderer({
+                    suppressMarkers: true
+                }); //passed into the getDirections() calls below 
                 
                 var geocoder = new google.maps.Geocoder();
                 geocoder.geocode({address: "<?php echo $projectAddr; ?>"}, function(results){
@@ -97,8 +115,16 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                     var destinationMarker = new google.maps.Marker( {
                         position: myLatLng,
                         title: "<?php echo $projectName; ?>", //will show up on user hover over marker
+                        icon: "images/marker_directions_icon_finish.png",
                         map: map        
                     }); 
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: "<?php echo $projectAddr; ?>",
+                        maxWidth: 150
+                    });
+                    var destinationMarkerListener = google.maps.event.addListener(destinationMarker, "click", function(event){
+                        infoWindow.open(map, destinationMarker);
+                    });
 
                     /*********************--------location search box for directions (option 2)---------********************/
                     var input = document.getElementById('location_search');
@@ -130,7 +156,23 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 			<!--***************************-Beginning Page-******************************-->
 			
             <div id="page_content">
-                <div id="project_info"></div>
+                <div id="project_info">
+                    <?php
+                        echo "<h1 id='display_projectName'>" . $projectName . "</h1>"
+                            . "<p id='display_projectDateTime'>" . $projectTime . " on <i>" . $date . "</i></p>"
+                            . "<p id='display_projectAddr'>@ " . $projectAddr . "</p>"
+                            . "<p id='display_projectHost'>Hosted by: " . $projectHost . "</p>"
+                            . "<p id='display_projectDescript'>" . $projectDescrip . "</p>";
+
+                        if ( isset( $session ) ) { //user is logged in
+                            echo "<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" . $projectId . "' layout='standard' action='like' show_faces='true' share='true'></fb:like></p>";
+                        }
+                    ?>
+                    <script>
+                        //reparse XFBML
+                        FB.XFBML.parse();
+                    </script>
+                </div>
                 <div id="map_container">
                     <div id="map_canvas"></div>
                     <div id="map_directions">

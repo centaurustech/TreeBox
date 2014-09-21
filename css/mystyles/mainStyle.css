@@ -45,6 +45,9 @@ div.error{
     margin-left: .7em;
     font-size: 1.4em;
 }
+ul.ul_error{
+    margin-top: 0;
+}
 li.error{
     color: red;
     font-size: .9em;
@@ -121,6 +124,8 @@ div#user_profile{
 
 img#fb_propic{
     vertical-align:middle;
+    height: 1.6em;
+    width: 1.6em;
 }
 
 div#block_logout {
@@ -157,6 +162,7 @@ div.block_login { /*actually appears where the navbar div should*/
     width: 11.75em;
     padding-top: .125em;
     padding-bottom: .125em;
+    padding-left: .25em;
 }
 .btn-fb-button {
     width: 100%;
@@ -204,14 +210,12 @@ div.block_login { /*actually appears where the navbar div should*/
 
 div#footer{
     display: block;
-    position: relative;
     width: 100%;
     margin: 0 auto;
     margin-top: .5em;
 }
 p#production_creds{
-    bottom: 0;
-    margin: 0;
+    margin: auto;
     margin-bottom: .3em;
     text-align: center;
     font-size: .9em;
