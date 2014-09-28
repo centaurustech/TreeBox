@@ -39,9 +39,8 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
    	}(document, 'script', 'facebook-jssdk'));
 </script>
 
-<!--font for the navbar links-->
-<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
-<link type="text/css" rel='stylesheet' href='css/mystyles/mainStyle.css' /><!--header style stuff (same for every page)-->
+<!--header style stuff (same for every page)-->
+<link type="text/css" rel='stylesheet' href='css/mystyles/mainStyle.css' />
 
 <div id='header_bar'>
 	<?php 

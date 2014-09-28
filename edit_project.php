@@ -194,7 +194,7 @@ if(isset($_GET['proj_id'])){
                     $project_form_id = "edit_project_form";
                     $project_form_legend = "EDIT YOUR PROJECT";
                     $project_form_element_class = "edit_project";
-                    $project_form_submit_button_value = "Done editing";
+                    $project_form_submit_button_value = "Done (back to My Projects)";
 
                     if(!isset($_GET['delete'])){
                         //fill in values in form with project values (a sort of "sticky"), see project_form.php for where these values are used

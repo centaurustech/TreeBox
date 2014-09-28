@@ -11,6 +11,7 @@ session_start(); //for facebook login (set up in "header.php")
     	<!-- style stuff -->
         <link type="text/css" rel='stylesheet' href='css/mystyles/mainIndexStyle.css' /> <!--this page's style stuff-->
         <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet" /><!--jQuery UI style-->
+        <link href="js/raty-2.7.0/lib/jquery.raty.css" type="text/css" rel="stylesheet" /><!--Raty (star ratings) style-->
         <!-- fonts -->
         <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'> <!--Lato Font-->
     	
@@ -19,6 +20,7 @@ session_start(); //for facebook login (set up in "header.php")
         <script type="text/javascript" src="js/jquery-ui.min.js"></script> <!--jQuery UI-->
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> <!--google maps places (for autocomplete)-->
         <script src="js/oms.min.js"></script> <!--OverlappingMarkerSpiderfier library-->
+        <script type="text/javascript" src="js/raty-2.7.0/lib/jquery.raty.js"></script> <!--Raty (star ratings) library-->
         <!--*********************- include JS file for index page *********************** -->
 		<script src="js/myscripts/mainIndexJS.js"></script> <!--main JS for this page-->
     </head>

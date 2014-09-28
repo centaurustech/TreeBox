@@ -6,7 +6,7 @@ div#add_project{
     height: auto;
     /*background-color: #29C9FF;*/
     border: .1em solid black;
-    font-family: 'Lato', serif;
+    font-family: 'Lato Regular', Arial, sans-serif;
     font-size: 1.5em;
 
     margin-left: auto;
@@ -28,10 +28,11 @@ fieldset.add_project{
     border: .2em solid #A0C0C0; 
 }
 legend.add_project{
-    color: blue;
+    color: #0066C0;
     font-weight: bold;
     font-size: 1.6em;
     margin-bottom: .2em;
+    font-family: 'Lato Black';
 }
 label.add_project{
     font-size: .85em;

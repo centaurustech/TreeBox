@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	/*************************navbar*********************/
 	$("#navbar_menu").navbar({ //see custom plugin ("js/jquery.navbar.js")
-		fontFamily: 'PT Sans, sans-serif', //supports font-weight: 400 (normal) or font-weight: 700 (bold)
+		fontFamily: 'Arial, sans-serif', //supports font-weight: 400 (normal) or font-weight: 700 (bold)
 		fontWeight: '700',
 		fontSize: '.9em',
 		letterSpacing: '.04em',

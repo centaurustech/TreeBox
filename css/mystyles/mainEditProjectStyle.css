@@ -31,10 +31,11 @@ fieldset.edit_project{
     border: .2em solid #A0C0C0; 
 }
 legend.edit_project{
-    color: blue;
+    color: #0066C0;
     font-weight: bold;
     font-size: 1.6em;
     margin-bottom: .2em;
+    font-family: 'Lato Black';
 }
 label.edit_project{
     font-size: .85em;

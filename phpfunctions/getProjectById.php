@@ -24,8 +24,10 @@ function print_array($array) {
 			
 			//format the description
             $projectDescrip = $row['project_description'];
-            if(strlen($projectDescrip) > 185){
-                $projectDescrip = substr($row['project_description'], 0, 185) . "...";
+            if(strlen($projectDescrip) > 230){
+            	$abridged = substr($row['project_description'], 0, 230);
+            	$cutoff = strrpos($abridged, ' '); //find the end of the last word
+	            $projectDescrip = substr($row['project_description'], 0, $cutoff) . "...";
             }
 
 			$dt = date_create($row['project_datetime']);
@@ -41,6 +43,7 @@ function print_array($array) {
 			$daysUntilProject = round($secondsUntilProject / 86400, 0); //number of days
 			$hoursUntilProject = round($secondsUntilProject / 3600, 0);
 
+
             /*if (isset($row['tags'])) { //If tags column is set for this project
                 $tags = $row['tags']; //and add to array
             }*/
@@ -55,7 +58,9 @@ function print_array($array) {
         		"project_hasExpired" => "{$row['hasExpired']}",
         		"project_address" => "{$row['loc_formatted_address']}",
         		"lat" => "{$row['location_lat']}",
-        		"lng" => "{$row['location_lng']}");
+        		"lng" => "{$row['location_lng']}",
+        		"avgRating" => "{$row['avgRating']}",
+        		"totalRatings" => "{$row['totalRatings']}");
         } else { //Query didn't run
 	        print '<p style="border: red; color: red;">Error, something occurred which prevented the query from executing. ' 
 	        	. mysql_error($dbc) . '</p>';
@@ -74,7 +79,9 @@ function print_array($array) {
     		"project_hasExpired" => hasExpired (boolean)
     		"project_address" : project_address (formatted), 
 			"lat" : location_lat,
-			"lng" : location_lng
+			"lng" : location_lng,
+			"avgRating" : avgRating,
+			"totalRatings" : totalRatings
 	    }
 	    */
 	    echo json_encode($projectInfoArray); 

@@ -72,8 +72,9 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 	            }*/
 	            //format the description
 	            $projectDescrip = $row['project_description'];
-	            if(strlen($projectDescrip) > 103){
-	            	$projectDescrip = substr($row['project_description'], 0, 103) . "...";
+	            if(strlen($projectDescrip) > 145){
+	            	$cutoff = strrpos(substr($row['project_description'], 0, 145), ' '); //find the end of the last word
+	            	$projectDescrip = substr($row['project_description'], 0, $cutoff) . "...";
 	            }
 
 	            //get the proximity of project

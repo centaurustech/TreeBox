@@ -43,8 +43,15 @@ div#map_message {
     overflow-x: hidden;
 }
 h1#message_projectName{
-    margin-bottom: 0;
+    margin-bottom: .3em;
     margin-top: .4em;
+}
+div#message_projectRating{
+    display: inline-block;
+    margin-right: .4em;
+}
+span#projectRating{
+    font-size: .8em;
 }
 p#message_projectDate{
     text-align: right;
@@ -56,6 +63,7 @@ p#message_projectAddress{
     text-align: right;
     font-size: .85em;
     margin-top: .2em;
+    font-family: 'Lato Regular';
 }
 p#message_projectDescription{
     margin-bottom: 0;
@@ -114,6 +122,9 @@ p#location_prompt{
 
 h1#nearby_projs_heading{
     margin-bottom: .3125em;   
+    margin-left: .2em;
+    font-family: 'Lato Bold';
+    font-size: 1.8em;
 }
 div#display_nearby_projs{
 }
@@ -134,7 +145,7 @@ h2.nearby_projs_projectName{
     margin-top: .3125em;
     margin-left: .3125em;
     margin-bottom: 0;
-    color: blue;
+    color: #292929;
 }
 p.nearby_projs_projectDescrip{
     margin: .3em 0 0 .625em;

@@ -70,18 +70,22 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 							var projectDate = data.project_date;
 							var projectTime = data.project_time;
 							var projectAddr = data.project_address;
+							var avgRating = data.avgRating;
+							var totalRatings= data.totalRatings;
 
 							//Create custom message
 							var overlay = new google.maps.OverlayView();
 							overlay.draw = function() {
 								//actual message
-								$("#map_message").html(
-									"<h1 id='message_projectName'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>" + projectName + "</a></h1>" 
-									+ "<p id='message_projectDate'><b>" + projectTime + "</b> on <i>" + projectDate + "</i></p>"
+								var html = "<h1 id='message_projectName'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>" + projectName + "</a></h1>";
+								if(avgRating > 0){
+									html += "<div id='message_projectRating'></div><span id='projectRating'>" + avgRating + " out of 5 (<a href='#'>" + totalRatings + "</a>)</span>";
+								}
+								html += "<p id='message_projectDate'><b>" + projectTime + "</b> on <i>" + projectDate + "</i></p>"
 									+ "<p id='message_projectAddress'>@ <b>" + projectAddr + "</b></p>"
 									+ "<p id='message_projectDescription'>" + projectDescrip + "</p>"
-									+ "<p id='message_viewProjectPageLink'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>Get directions/Go to project page</a><br/></p>"
-								); 
+									+ "<p id='message_viewProjectPageLink'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>Get directions/Go to project page</a><br/></p>";
+								$("#map_message").html(html); 
 								FB.getLoginStatus(function(response) { //just for debugging in console
 								  	if (response.status === 'connected') {
 								    	$("#map_message").append( /*###################the below URL will need to be changed########################*/
@@ -91,6 +95,15 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 								});
 								$("#map_message").show();
 								FB.XFBML.parse(); 
+								if ($('div#message_projectRating').length) { //if display rating element exists, won't if project has no ratings
+						            $("div#message_projectRating").raty({
+						                hints       : ['Bad', 'Poor', 'OK', 'Good', 'Excellent'],
+						                precision   : true,
+						                readOnly    : true,
+						                space       : false,
+						                score       : avgRating //change this to whatever the average rating for the project is
+						            });
+						        }
 
 								/*get the position for the map_message
 									(needs to be after there is something to show*/

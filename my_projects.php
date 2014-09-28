@@ -55,8 +55,10 @@ session_start(); //for facebook login (set up in "header.php")
             
                         //format the description
                         $projectDescrip = $row['project_description'];
-                        if(strlen($projectDescrip) > 170){
-                            $projectDescrip = substr($row['project_description'], 0, 170) . "...";
+                        if(strlen($projectDescrip) > 155){
+                            $abridged = substr($row['project_description'], 0, 155);
+                            $cutoff = strrpos($abridged, ' '); //find the end of the last word
+                            $projectDescrip = substr($row['project_description'], 0, $cutoff) . "...";
                         }
 
                         //format datetime

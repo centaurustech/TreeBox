@@ -10,9 +10,7 @@ session_start(); //for facebook login (set up in "header.php")
     	<!-- style stuff -->
         <link type="text/css" rel='stylesheet' href='css/mystyles/mainAddProjectStyle.css' /><!--add_project page's style stuff-->
         <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet"> <!--jQuery UI style-->
-        <!-- fonts -->
-        <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
-    	
+        
     	<!-- JS and jQuery stuff -->
     	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> <!--jQuery Library-->
         <script src="js/jquery.validate.min.js"></script> <!--Form validation-->

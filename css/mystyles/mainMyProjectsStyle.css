@@ -10,7 +10,6 @@ div#page_content{
 	this just basically makes the footer stay at the bottom of the fixed page********/
 }
 div#my_active_projs{
-	width: auto;
 	margin-bottom: 1em; /*spaces away from project memorial*/
 }
 span.projs_label{
@@ -41,10 +40,6 @@ td.proj_memorial{
 h1.projs_projectName{
 	font-size: ;
 	margin-bottom: .3em;
-}
-a{
-	text-decoration: none;
-	color: #3789CC;
 }
 p.projs_projectDateTime{
 	text-align: right;

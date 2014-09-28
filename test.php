@@ -53,4 +53,6 @@ $timezone = @$_SESSION['timezone']; //set with phpfunctions/timezone.php in the 
 	$now = date('m/d/Y h:i:s a', time()); //current date time
 	echo "<br/>" . $now . " <br/>" . date_default_timezone_get() . "<br/>" . $timezone;
 
+	$str = "hello";
+	echo "<br/><br/>" . substr($str, strlen($str) - 1);
 ?>
