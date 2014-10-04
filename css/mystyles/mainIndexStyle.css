@@ -20,8 +20,10 @@
 }*/
 /*---------page content div---------*/
 div#index_page_content{
-    display: block;
-    height: 90%;
+    height: 89%;
+    background-color: #F0F0F0;
+    border-bottom: .0625em solid #D9D9D9;
+    padding-bottom: 1em;
 }
 
 /*---------------*map div-------------*/
@@ -37,8 +39,8 @@ div#map_message {
     padding: 1em;
     width: 25em;
     background: white;
-    border: 2px black solid;
-    border-radius: 10px;
+    border: .15em solid #D1D1D1;
+    border-radius: .5em;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -133,9 +135,10 @@ ul#nearby_projs_list{
     margin-top: 0;
     padding-left: .1em;
 }
-ul#nearby_projs_list li{
+ul#nearby_projs_list li{ /*the border radii are adjusted in the mainIndexJS.js file*/
+    background-color: white;
     cursor: pointer;
-    border: 1px solid green;
+    border: .0658em solid #BBC9BB;
     padding-right: .375em;
     margin-left: .1em;
     margin-right: .375em;

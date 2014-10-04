@@ -18,7 +18,7 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
     $projectTime = $row['project_time'];
     //format datetime
     $dt = date_create($row['project_datetime']);
-    $date = date_format($dt, 'l F jS, Y');
+    $date = date_format($dt, 'l F j, Y');
     $projectHasExpired = false;
     if($row['hasExpired'] == 1)
         $projectHasExpired = true;
@@ -116,8 +116,21 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
             }
         });
     }
+    function adjustContentHeight(){
+        var heightRightPg = $("div#right_container").outerHeight(true); //true for include margin
+        var heightLeftPg = $("div#left_container").outerHeight(true);
+        var maxHeight = Math.max(heightRightPg, heightLeftPg);
+        var height = Math.max(maxHeight, .89 * $("div#container").height()); //test again vs. the container this time
+
+        $("div#page_content").height(height);
+    }
+    $(window).load(function(){ //HAS TO BE IN $(window).load to make sure all page elements are fully loaded
+        /*-----------------------------Height of the page------------------------------------*/
+        adjustContentHeight();
+    });
     $(document).ready(function(){
         /*-------------------------------Ratings plugin widget------------------------------*/
+        //display avg ratings in proj info
         if ($('div#display_projectRating').length) { //if display rating element exists, won't if project has no ratings
             $("div#display_projectRating").raty({
                 hints       : ['Bad', 'Poor', 'OK', 'Good', 'Excellent'],
@@ -128,6 +141,7 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
             });
         }
 
+        //asks user to write a review
         if ($('button#rating_prompt').length) { //if display rating prompt exists, won't if user has already submitted a review for this project
             $("div#user_rating").raty({
                 hints       : ['Bad', 'Poor', 'OK', 'Good', 'Excellent'],
@@ -199,8 +213,36 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 
             $("button#rating_prompt").click(function(){
                 $("div#give_rating").toggle();
+
+                var reviewsHeight = 0;
+                if($("p#no_reviews_message").length > 0){
+                    reviewsHeight = $("p#no_reviews_message").outerHeight(true);
+                } else{
+                    $("div.a_review").each(function(){
+                        reviewsHeight += $(this).outerHeight(true);
+                    });
+                }
+                var height = $("h2#review_title").outerHeight(true) + reviewsHeight + $("button#rating_prompt").outerHeight(true);
+                if($("div#give_rating").attr("style") == "display: block;"){
+                    height += $("button#submitReview").outerHeight(true) + $("div#give_rating").outerHeight(true) + 21;
+                } 
+                $("div#project_review_container").height(height);
+
+                adjustContentHeight(); //readjust height to reposition footer
             });
         }//end if(prompt user to write a review button exists)
+
+        /*-----------------------------------displays top 3 reviews------------------------------*/
+        $("div.review_stars").each(function(){
+            var stars = $(this).attr("data-stars");
+            $(this).raty({
+                hints       : ['1 out of 5 stars', '2 out of 5 stars', '3 out of 5 stars', '4 out of 5 stars', '5 out of 5 stars'],
+                readOnly    : true,
+                space       : false,
+                score       : stars
+            });
+        });
+        $("div#project_review_container .a_review").not($("div#project_review_container .a_review:last")).css("margin-bottom", "1.3em"); //about 20px spacing between reviews
         /*------------------------------------end give rating-----------------------------------*/
 
         /*--------------------Map for directions----------------------------*/
@@ -259,26 +301,78 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 
 <!--***************************-Beginning Page-******************************-->
             <div id="page_content">
-                <div id="project_info">
-                    <?php
-                        echo "<h1 id='display_projectName'>" . $projectName . "</h1>";
-                        if($avgRating > 0){ //there actually are ratings
-                            $pluralRatings = "ratings";
-                            if($totalRatings == 1){
-                                $pluralRatings = "rating";
+                <div id="left_container">
+                    <div id="project_info" class="container left_page">
+                        <?php
+                            echo "<h1 id='display_projectName'>" . $projectName . "</h1>";
+                            if($avgRating > 0){ //there actually are ratings
+                                $pluralRatings = "ratings";
+                                if($totalRatings == 1){
+                                    $pluralRatings = "rating";
+                                }
+                                echo "<div id='display_projectRating'></div><span id='projectRating_message'>" . $avgRating . " out of 5 (<a href='#'>" . $totalRatings . " $pluralRatings</a>)</span>";
                             }
-                            echo "<div id='display_projectRating'></div><span id='projectRating_message'>" . $avgRating . " out of 5 (<a href='#'>" . $totalRatings . " $pluralRatings</a>)</span>";
-                        }
-                        echo "<p id='display_projectHost'>Hosted by: " . $projectHost . "</p>"
-                            . "<p id='display_projectDateTime'>" . $projectTime . " on <i>" . $date . "</i></p>"
-                            . "<p id='display_projectAddr'>@ " . $projectAddr . "</p>"
-                            . "<p id='display_projectDescript'>" . $projectDescrip . "</p>";
+                            echo "<p id='display_projectHost'><span class='info_descript'>Hosted by: </span><a href='#'>" . $projectHost . "</a></p>"
+                                . "<p id='display_projectDateTime'><span class='info_descript'>Time: </span>" . $projectTime . " on " . $date . "</p>"
+                                . "<p id='display_projectAddr'><span class='info_descript'>Address: </span>" . $projectAddr . "</p>"
+                                . "<p id='display_projectDescript'>" . $projectDescrip . "</p>";
 
-                        //FB like and share buttons
-                        if ( isset( $session ) ) { //user is logged in
-                            echo "<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" . $projectId . "' layout='standard' action='like' show_faces='true' share='true'></fb:like></p>";
-                        }
+                            //FB like and share buttons
+                            if ( isset( $session ) ) { //user is logged in
+                                echo "<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" . $projectId . "' layout='standard' action='like' show_faces='true' share='true'></fb:like></p>";
+                            }
+                        ?>
+                    </div>
+                    <div id="pinned_posts_container" class='container left_page'>
+                        <h2 id='review_title' class='container_title'>Pinned Posts</h2>
+                    </div>
+                </div>
+                <div id="right_container">
+                    <div id="map_container" class="container right_page">
+                        <div id="map_canvas"></div>
+                        <div id="map_directions">
+                            <p id="map_directions_prompt">Enter a starting location to get directions to this project</p>
+                        </div>
+                        <input type="text" name="location_search" id="location_search" class="location_search_controls" placeholder="Enter a starting location" style="display: none;">
+                    </div>
+                    <div id="project_review_container" class="container right_page">
+                        <h2 id='review_title' class='container_title'>Project Reviews</h2>
+                        <?php
+                        $ratingsQuery = "SELECT * FROM ratings
+                                WHERE project_id = {$projectId}
+                                ORDER BY date_submitted DESC
+                                LIMIT 0, 3"; 
+                        if ($ratingsResult = @mysql_query($ratingsQuery, $dbc)) { //successful query
+                            if (mysql_num_rows($ratingsResult) > 0) {
+                                while ($ratingsRow = mysql_fetch_array($ratingsResult)) {
+                                    $ratingAuthor = $ratingsRow['author_id'];
+                                    $authorQuery = "SELECT * FROM users
+                                            WHERE user_id = {$ratingAuthor}"; 
+                                    if ($authorResult = @mysql_query($authorQuery, $dbc)) { //successful query
+                                        $authorRow = mysql_fetch_array($authorResult);
+                                        $authorName = $authorRow['first_name'] . " " . $authorRow['last_name'];
+                                    }
 
+                                    $reviewTitle = $ratingsRow['review_title'];
+                                    $reviewContent = $ratingsRow['review_content'];
+                                    $reviewStars = $ratingsRow['stars'];
+                                    //format datetime
+                                    $dt = date_create($ratingsRow['date_submitted']);
+                                    $dateSubmitted = date_format($dt, 'F j, Y'); 
+
+                                    echo "<div class='a_review'>
+                                            <div class='review_stars' data-stars={$reviewStars}></div>
+                                            <span class='review_title'>{$reviewTitle}</span>
+                                            <p class='review_info'>by <a href='#'>{$authorName}</a> on {$dateSubmitted}</p>
+                                            <p class='review_content'>{$reviewContent}</p>
+                                        </div>";  //data stored for javascript raty plugin initailization
+                                }      
+                            } else{
+                                echo "<p id='no_reviews_message'>There are no project reviews yet</p>";
+                            }      
+                        } 
+
+                        //prompt user to write a review
                         if(!$userHasWrittenReview){ //user has not yet written a review for this project
                             echo "<button type='button' id='rating_prompt'>Write a review for this project</button>
                                 <div id='give_rating'>
@@ -290,15 +384,9 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                                     </form>
                                 </div>"; //the div id="give_rating" is hidden until button is clicked
                         }
-                    ?>
-                </div>
-                <div id="map_container">
-                    <div id="map_canvas"></div>
-                    <div id="map_directions">
-                        <p id="map_directions_prompt">Enter a starting location to get directions to this project</p>
-                    </div>
-                    <input type="text" name="location_search" id="location_search" class="location_search_controls" placeholder="Enter a starting location" style="display: none;">
-                </div>
+                        ?>
+                    </div> <!--end review container div-->
+                </div> <!--end right container div-->
             </div><!--end page_content div-->
 
 <?php include("templates/footer.php"); ?>

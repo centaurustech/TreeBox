@@ -82,7 +82,7 @@ function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {
 
 	            //format datetime
 	            $dt = date_create($row['project_datetime']);
-				$date = date_format($dt, 'l m/d/Y');
+				$date = date_format($dt, 'D M d, Y'); //Thu Jan 21, 2015
 
 	            $projectInfoArray[] = array("project_id" => "{$row['project_id']}",
 	            	"user_id" => "{$row['user_id']}",

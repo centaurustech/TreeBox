@@ -29,7 +29,7 @@ function print_array($array) {
 		$title = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['review_title']))));;
 
         $query = "INSERT INTO ratings(author_id, {$reviewRecipient}, stars, review_title, review_content, rating_type) 
-            VALUES('$authorId', '$recipientId', '$stars', '$title', '$content', '$ratingType')";
+            VALUES('$authorId', '$recipientId', '$stars', '$title', '$content', '$ratingType')"; //default date_submitted is current timestamp in db
         @mysql_query($query, $dbc);
         $successArray = array();
         if (mysql_affected_rows($dbc) == 1) { //something changed

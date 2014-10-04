@@ -183,12 +183,12 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	      	// print logout url using session and redirect_uri (logout.php page should destroy the session)
       		echo '<div id="fb_user">
       				<div id="user_profile" class="fb_user_button">
-	      				<a href="my_projects.php"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
+	      				<a href="my_projects.php" class="fb_fxn_link"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
 	      				<span class="fb_title">' . $user->getFirstName() . '</span></a>
 	      			</div>
 		      		<div id="block_logout" class="fb_user_button">
 	      				<a href="' . $helper->getLogoutUrl($session, 'http://localhost/TreeBox/facebook/logout.php')  /*###########################this needs to be updated############*/
-	      				. '"><span class="fb_title">Logout</span></a>
+	      				. '" class="fb_fxn_link"><span class="fb_title">Logout</span></a>
 		      		</div>
 	      		</div>'; /*---------------the propic is linked to my_projects.php for now-----------------*/
 	  	} else { //session does not exist

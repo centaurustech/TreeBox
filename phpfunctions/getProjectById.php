@@ -31,7 +31,7 @@ function print_array($array) {
             }
 
 			$dt = date_create($row['project_datetime']);
-			$date = date_format($dt, 'l F jS, Y');
+			$date = date_format($dt, 'l F j, Y');
 			$projectHasExpired = false;
 		    if($row['hasExpired'] == 1)
 		        $projectHasExpired = true;

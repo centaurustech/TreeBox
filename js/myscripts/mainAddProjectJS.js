@@ -1,3 +1,11 @@
+$(window).load(function(){
+    var fieldsetWidth = $("fieldset").width();
+    var descriptionWidth = $("textarea#project_description").outerWidth(true);
+    var spanMarginWidth = $("span.form_required").outerWidth(true) - $("span.form_required").width();
+    var width = fieldsetWidth - descriptionWidth - spanMarginWidth;
+    $("textarea#project_description").next("span.form_required").css("width", width);
+});
+
 $(document).ready(function() {
 	/******************** MAP stuff********************/	
 	var geocoder = new google.maps.Geocoder(); //auto complete in location input prompt

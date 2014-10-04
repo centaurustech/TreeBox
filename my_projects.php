@@ -35,7 +35,7 @@ session_start(); //for facebook login (set up in "header.php")
                         ORDER BY project_datetime ASC"; 
                 if ($result = @mysql_query($query, $dbc)) { //successful query
                     echo '<div id="my_active_projs">
-                            <span class="projs_label">My active projects</span>
+                            <span class="projs_label">MY ACTIVE PROJECTS</span>
                             <!--Table of projects-->
                             <table id="projs_table">
                                 <tbody id="projs_tbody">';
@@ -95,7 +95,7 @@ session_start(); //for facebook login (set up in "header.php")
                         ORDER BY project_datetime DESC"; 
                 if ($result = @mysql_query($query, $dbc)) { //successful query
                     echo '<div id="proj_memorial">
-                            <span class="projs_label">Project memorial</span>
+                            <span class="projs_label">PROJECT MEMORIAL</span>
                             <!--Table of projects-->
                             <table id="projs_table">
                                 <tbody id="projs_tbody">'; 
