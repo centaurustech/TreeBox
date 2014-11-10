@@ -78,9 +78,9 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 							overlay.draw = function() {
 								//actual message
 								var html = "<h1 id='message_projectName'><a target='_blank' href='view_project.php?proj_id=" + marker.id + "'>" + projectName + "</a></h1>";
-								if(avgRating > 0){
+								/*if(avgRating > 0){
 									html += "<div id='message_projectRating'></div><span id='projectRating'>" + avgRating + " out of 5 (<a href='#'>" + totalRatings + "</a>)</span>";
-								}
+								}*/
 								html += "<p id='message_projectDate'><b>" + projectTime + "</b> on <i>" + projectDate + "</i></p>"
 									+ "<p id='message_projectAddress'>@ <b>" + projectAddr + "</b></p>"
 									+ "<p id='message_projectDescription'>" + projectDescrip + "</p>"
@@ -95,7 +95,7 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 								});
 								$("#map_message").show();
 								FB.XFBML.parse(); 
-								if ($('div#message_projectRating').length) { //if display rating element exists, won't if project has no ratings
+								/*if ($('div#message_projectRating').length) { //if display rating element exists, won't if project has no ratings
 						            $("div#message_projectRating").raty({
 						                hints       : ['Bad', 'Poor', 'OK', 'Good', 'Excellent'],
 						                precision   : true,
@@ -103,7 +103,7 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 						                space       : false,
 						                score       : avgRating //change this to whatever the average rating for the project is
 						            });
-						        }
+						        }*/
 
 								/*get the position for the map_message
 									(needs to be after there is something to show*/

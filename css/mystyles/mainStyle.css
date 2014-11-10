@@ -40,6 +40,96 @@ a:hover {
 a:active {
     color: black;
 }
+textarea{
+    resize: none;
+    padding: .4em;
+}
+
+/*---------------------button link--------------------*/
+a.buttonOne { /******************aquamarine**********************/
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #599bb3), color-stop(1, #408c99));
+    background: -moz-linear-gradient(top, #599bb3 5%, #408c99 100%);
+    background: -webkit-linear-gradient(top, #599bb3 5%, #408c99 100%);
+    background: -o-linear-gradient(top, #599bb3 5%, #408c99 100%);
+    background: -ms-linear-gradient(top, #599bb3 5%, #408c99 100%);
+    background: linear-gradient(to bottom, #599bb3 5%, #408c99 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#599bb3', endColorstr='#408c99',GradientType=0);
+    background-color: #599bb3;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: arial;
+    font-size: 1em;
+    font-weight: bold;
+    padding: .5em .8em;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #3d768a;
+}
+a.buttonOne:hover {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #408c99), color-stop(1, #599bb3));
+    background: -moz-linear-gradient(top, #4C95B0 5%, #2D7E8C 100%);
+    background: -webkit-linear-gradient(top, #4C95B0 5%, #2D7E8C 100%);
+    background: -o-linear-gradient(top, #4C95B0 5%, #2D7E8C 100%);
+    background: -ms-linear-gradient(top, #4C95B0 5%, #2D7E8C 100%);
+    background: linear-gradient(to bottom, #4C95B0 5%, #2D7E8C 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#408c99', endColorstr='#599bb3',GradientType=0);
+    background-color: #408c99;
+}
+a.buttonTwo { /*********************green************************/
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #6BB359), color-stop(1, #529940));
+    background: -moz-linear-gradient(top, #6BB359 5%, #529940 100%);
+    background: -webkit-linear-gradient(top, #6BB359 5%, #529940 100%);
+    background: -o-linear-gradient(top, #6BB359 5%, #529940 100%);
+    background: -ms-linear-gradient(top, #6BB359 5%, #529940 100%);
+    background: linear-gradient(to bottom, #6BB359 5%, #529940 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6BB359', endColorstr='#529940',GradientType=0);
+    background-color: #6BB359;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: arial;
+    font-size: 1em;
+    font-weight: bold;
+    padding: .5em .8em;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #3d768a;
+}
+a.buttonTwo:hover {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #529940), color-stop(1, #6BB359));
+    background: -moz-linear-gradient(top, #60B04C 5%, #408C2D 100%);
+    background: -webkit-linear-gradient(top, #60B04C 5%, #408C2D 100%);
+    background: -o-linear-gradient(top, #60B04C 5%, #408C2D 100%);
+    background: -ms-linear-gradient(top, #60B04C 5%, #408C2D 100%);
+    background: linear-gradient(to bottom, #60B04C 5%, #408C2D 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#529940', endColorstr='#6BB359',GradientType=0);
+    background-color: #529940;
+}
+a.buttonOne:active, a.buttonTwo:active {
+    position: relative;
+    top: 1px;
+}
+
+img.img_button{
+    vertical-align: bottom;
+    height: 1.35em;
+    width: 1.35em;
+    margin-right: .4em; /*------spacing from span.navbar_link--------*/
+}
+span.button_message{
+}
+
+
+p.no_results{ /*when a query for a user returns no results, a no results message will show*/
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 0;
+}
 /************************************Forms***********************************/
 span.form_required{
     color: red;
@@ -181,9 +271,11 @@ div.fb_user_button:hover {
     /*------------------------------facebook sign in button-----------------------------*/
 div.block_login { /*actually appears where the navbar div should*/
     width: 11.75em;
-    padding-top: .125em;
+    padding-top: .33em;
     padding-bottom: .125em;
-    padding-left: .25em;
+    padding-right: .25em;
+    display: inline-block;
+    float: right;
 }
 .btn-fb-button {
     width: 100%;

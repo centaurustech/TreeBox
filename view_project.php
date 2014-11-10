@@ -9,7 +9,7 @@ $query = "SELECT * FROM projects
 if ($result = @mysql_query($query, $dbc)) { //successful query
     $row = mysql_fetch_array($result);
 
-    $projectUserId = $row['user_id'];
+    $projectHostId = $row['user_id'];
     $projectName = $row['project_name'];
     //format the description
     $projectDescrip = $row['project_description'];
@@ -36,12 +36,13 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 
 //Get host user's name:
 $query = "SELECT * FROM users
-        WHERE user_id = {$projectUserId}"; 
+        WHERE user_id = {$projectHostId}"; 
 if ($result = @mysql_query($query, $dbc)) { //successful query
     $row = mysql_fetch_array($result);
     $projectHost = $row['first_name'] . " " . $row['last_name'];
 }
 
+//Info about project members is done below, after user login is verified
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,15 +66,59 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
         <div id="container"> <!--closed in footer-->
         	<?php include("templates/header.php");
             
-            //Check whether user has already submitted a review for this project (if so, he/she cannot do so again: is prevented at the bottom of code)
-            $userHasWrittenReview = false;
-            $query = "SELECT * FROM ratings
-                WHERE project_id = {$projectId} AND author_id = {$userId}"; //$userId from header.php
-            if ($result = @mysql_query($query, $dbc)) { //successful query
-                if (mysql_num_rows($result) > 0) {
-                    $userHasWrittenReview = true;
+            //Check if user has logged in
+            if(isset($userId)){
+                $userLoggedIn = true;
+                $userIsMemberOfProject = false; //a member of the current project
+
+                if($projectHostId == $userId){
+                    $userIsHostOfProject = true;
+                } else{
+                    $userIsHostOfProject = false;
                 }
+            } else{
+                $userLoggedIn = false;
             }
+
+            //Get information about the projects members, and see whether user is a member of the project
+            $memberQuery = "SELECT * FROM project_members
+                    WHERE project_id = {$projectId}"; 
+            if ($result = @mysql_query($memberQuery, $dbc)) { //successful query
+                $projectMembersArray = array(); //store members of the project (it will be a multidimensional array)
+                while ($row = mysql_fetch_array($result)) {
+                    $participantId = $row['participant_id'];
+                    
+                    $participantQuery = "SELECT first_name, last_name FROM users
+                        WHERE user_id = {$participantId}"; 
+                    if ($participantQueryResult = @mysql_query($participantQuery, $dbc)) { //successful query
+                        $participantQueryRow = mysql_fetch_array($participantQueryResult);
+
+                        $participantName = $participantQueryRow['first_name'] . " " . $participantQueryRow['last_name'];
+                    } //end of $participantQuery result
+
+                    $projectMembersArray[] = array("participant_id" => $participantId,
+                        "participant_name" => $participantName); //to get propic <img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
+
+                    //finally, if user is logged in, check if he is a member of the current project
+                    if($userLoggedIn && $participantId == $userId){
+                        $userIsMemberOfProject = true;
+                        //might as well snatch up the user's name too
+                        $userName = $participantQueryRow['first_name'] . " " . $participantQueryRow['last_name'];
+                    }
+                } //end of while $row
+            } //end of memberQuery result
+
+            /*//Check whether user has already submitted a review for this project (if so, he/she cannot do so again: is prevented at the bottom of code)
+            if($userLoggedIn){
+                $userHasWrittenReview = false;
+                $query = "SELECT * FROM ratings
+                    WHERE project_id = {$projectId} AND author_id = {$userId}"; //$userId from header.php
+                if ($result = @mysql_query($query, $dbc)) { //successful query
+                    if (mysql_num_rows($result) > 0) {
+                        $userHasWrittenReview = true;
+                    }
+                }
+            }*/
             ?>
             <!--script starts here to use $userId variable from header.php-->
 <script>
@@ -116,20 +161,26 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
             }
         });
     }
-    function adjustContentHeight(){
+    function adjustContentHeight(minimize){
         var heightRightPg = $("div#right_container").outerHeight(true); //true for include margin
-        var heightLeftPg = $("div#left_container").outerHeight(true);
+        var heightLeftPg = $("div#left_container").outerHeight(true) + 16; //+16 to account for rendering of message_fbShareLike element
         var maxHeight = Math.max(heightRightPg, heightLeftPg);
         var height = Math.max(maxHeight, .89 * $("div#container").height()); //test again vs. the container this time
 
-        $("div#page_content").height(height);
+        if(minimize == false){
+            if(height < $("div#page_content").height()){
+                return;
+            }
+        }
+        $("div#page_content").height(height); 
     }
     $(window).load(function(){ //HAS TO BE IN $(window).load to make sure all page elements are fully loaded
         /*-----------------------------Height of the page------------------------------------*/
-        adjustContentHeight();
+        adjustContentHeight(true);
     });
     $(document).ready(function(){
-        /*-------------------------------Ratings plugin widget------------------------------*/
+        /*
+        /*-------------------------------Ratings plugin widget------------------------------* /
         //display avg ratings in proj info
         if ($('div#display_projectRating').length) { //if display rating element exists, won't if project has no ratings
             $("div#display_projectRating").raty({
@@ -192,8 +243,8 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                             rating_stars    : ratingStars,
                             review_title    : ratingTitle,
                             review_content  : ratingContent,
-                            recipient_id    : <?php echo $projectId; ?>,
-                            author_id       : <?php echo $userId; //variable from header.php ?>
+                            recipient_id    : "<?php echo $projectId; ?>",
+                            author_id       : "<?php echo $userId; ?>"
                         },
                         dataType: "json",
                         error: function(xhr, status, error) {
@@ -207,7 +258,7 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                                 $("div#give_rating").html("<span class='error'>Something went wrong</span>");
                             }
                         } //end success
-                    }); //end ajax*/
+                    }); //end ajax* /
                 } //end if(isValid)
             }); //end button onclick listener
 
@@ -228,11 +279,11 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                 } 
                 $("div#project_review_container").height(height);
 
-                adjustContentHeight(); //readjust height to reposition footer
+                adjustContentHeight(true); //readjust height to reposition footer
             });
         }//end if(prompt user to write a review button exists)
 
-        /*-----------------------------------displays top 3 reviews------------------------------*/
+        /*-----------------------------------displays top 3 reviews------------------------------* /
         $("div.review_stars").each(function(){
             var stars = $(this).attr("data-stars");
             $(this).raty({
@@ -243,6 +294,15 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
             });
         });
         $("div#project_review_container .a_review").not($("div#project_review_container .a_review:last")).css("margin-bottom", "1.3em"); //about 20px spacing between reviews
+        
+        $("a.review_read_more_message").click(function(evt){
+            var parent = $(this).parent();
+            parent.next().toggle(); //$("span.overflow_review_content")
+            parent.toggle(); //$("span.read_more")
+            evt.preventDefault();
+
+            adjustContentHeight(true); //readjust height to reposition footer
+        });
         /*------------------------------------end give rating-----------------------------------*/
 
         /*--------------------Map for directions----------------------------*/
@@ -296,6 +356,45 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                 });
             }  //end geolocation of finding users location
         }); //end geocode
+
+        /*------------------------------join project----------------------------------*/
+        if($('div#join_projectDiv').length > 0){
+            $("a#join_projectButton").click(function(evt){
+                $.ajax({
+                    url: "phpfunctions/userJoinProject.php",
+                    type: "POST",
+                    data: {
+                        project_id          : "<?php echo $projectId; ?>", //have to use quotations for some reason
+                        participant_id      : "<?php if($userLoggedIn) echo $userId; ?>"
+                    },
+                    dataType: "json",
+                    error: function(xhr, status, error) {
+                        alert("Error: " + xhr.status + " - " + error);
+                    },
+                    success: function(data) {
+                        var isSuccess = data.success;
+                        if(isSuccess == true){
+                            $("div#join_projectDiv").html("<span class='success'><img src='images/check_icon.png' id='check_mark'/>You are now a member of this project</span>");
+                        } else{
+                            $("div#join_projectDiv").html("<span class='error'>Oops, something went wrong</span>");
+                        }
+                    } //end success
+                }); //end ajax
+                
+                evt.preventDefault();
+            }); //end click listener
+        } //end if join_projectDiv exists
+
+        /*------------------------------------Pinned posts---------------------------------------*/
+        if($('div#post_to_project_div').length > 0){
+            var height = $("div#post_to_project_div").height() + $("a#submit_post_to_project").outerHeight(true);
+            $("div#post_to_project_div").height(height);
+
+            $("a#submit_post_to_project").click(function(evt){
+                evt.preventDefault();
+            });
+        }
+
     });  // end ready
 </script>
 
@@ -305,17 +404,41 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                     <div id="project_info" class="container left_page">
                         <?php
                             echo "<h1 id='display_projectName'>" . $projectName . "</h1>";
-                            if($avgRating > 0){ //there actually are ratings
+                            /*if($avgRating > 0){ //there actually are ratings
                                 $pluralRatings = "ratings";
                                 if($totalRatings == 1){
                                     $pluralRatings = "rating";
                                 }
                                 echo "<div id='display_projectRating'></div><span id='projectRating_message'>" . $avgRating . " out of 5 (<a href='#'>" . $totalRatings . " $pluralRatings</a>)</span>";
-                            }
-                            echo "<p id='display_projectHost'><span class='info_descript'>Hosted by: </span><a href='#'>" . $projectHost . "</a></p>"
+                            }*/
+                            echo "<p id='display_projectHost'><span class='info_descript'>Hosted by: </span><a href='#'>" . $projectHost . "</a><img src='https://graph.facebook.com/". $projectHostId . "/picture?type=square&height=14&width=14' class='host_propic' title='" . $projectHost . "' alt='" . $projectHost . "' /></p>"
                                 . "<p id='display_projectDateTime'><span class='info_descript'>Time: </span>" . $projectTime . " on " . $date . "</p>"
-                                . "<p id='display_projectAddr'><span class='info_descript'>Address: </span>" . $projectAddr . "</p>"
-                                . "<p id='display_projectDescript'>" . $projectDescrip . "</p>";
+                                . "<p id='display_projectAddr'><span class='info_descript'>Address: </span>" . $projectAddr . "</p>";
+                            
+                            //Project members
+                            echo "<div id='project_members'>";
+                            $numMembers = count($projectMembersArray);
+                            if($numMembers > 0){
+                                echo "<span class='info_descript'>Members: </span>";
+                                if(isset($userIsMemberOfProject) && $userIsMemberOfProject){ //show the user his own membership first
+                                    echo '<img src="https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" class="member_propic" title="You" alt="You" />';
+                                }
+                                foreach($projectMembersArray as $value){ //multidimensional array
+                                    if($userLoggedIn && $value['participant_id'] == $userId)
+                                        continue;
+                                    $participantId = $value['participant_id'];
+                                    $participantName = $value['participant_name'];
+
+                                    echo '<img src="https://graph.facebook.com/'. $participantId . '/picture?type=square&height=15&width=15" class="member_propic" title="' . $participantName . '" alt="'. $participantName . '"/>';
+                                }
+                            }
+                            echo "</div>";
+                            //allow user to join project
+                            if($userLoggedIn && !$userIsMemberOfProject && !$userIsHostOfProject){ //not a current member, prompt them to join
+                                echo "<div id='join_projectDiv'><a id='join_projectButton' class='buttonOne'><img src='images/join_icon.png' class='img_button' /><span id='join_project_message' class='button_message'>Join</span></a></div>";
+                            } 
+
+                            echo "<p id='display_projectDescript'>" . $projectDescrip . "</p>";
 
                             //FB like and share buttons
                             if ( isset( $session ) ) { //user is logged in
@@ -325,6 +448,16 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                     </div>
                     <div id="pinned_posts_container" class='container left_page'>
                         <h2 id='review_title' class='container_title'>Pinned Posts</h2>
+                        <?php
+                        if($userLoggedIn && ($userIsMemberOfProject || $userIsHostOfProject)){
+                            echo "<div id='post_to_project_div'>
+                                    <form action='view_project.php' method='POST' id='post_to_project_form'>
+                                        <textarea name='post_to_project_content' id='post_to_project_content' class='post_to_project_element' rows=3 placeholder='Write a post here'></textarea>
+                                        <a id='submit_post_to_project' class='buttonTwo'>Post</a>
+                                    </form>
+                                </div>";
+                        }
+                        ?>
                     </div>
                 </div>
                 <div id="right_container">
@@ -335,9 +468,10 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                         </div>
                         <input type="text" name="location_search" id="location_search" class="location_search_controls" placeholder="Enter a starting location" style="display: none;">
                     </div>
-                    <div id="project_review_container" class="container right_page">
-                        <h2 id='review_title' class='container_title'>Project Reviews</h2>
-                        <?php
+                    <?php /*
+                    if($userLoggedIn){ 
+                        echo '<div id="project_review_container" class="container right_page">
+                            <h2 id="review_title" class="container_title">Project Reviews</h2>';
                         $ratingsQuery = "SELECT * FROM ratings
                                 WHERE project_id = {$projectId}
                                 ORDER BY date_submitted DESC
@@ -355,6 +489,15 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
 
                                     $reviewTitle = $ratingsRow['review_title'];
                                     $reviewContent = $ratingsRow['review_content'];
+                                    if(strlen($reviewContent) > 500){
+                                        $abridged = substr($ratingsRow['review_content'], 0, 500);
+                                        $cutoff = strrpos($abridged, ' '); //find the end of the last word
+                                        
+                                        $reviewContent = substr($ratingsRow['review_content'], 0, $cutoff) . "<span class='read_more'>...<a href='#' class='review_read_more_message'>Read more ›</a></span>";
+
+                                        $cutoffReview = substr($ratingsRow['review_content'], $cutoff); 
+                                        $reviewContent .= "<span class='overflow_review_content'>" . $cutoffReview . "</span>";
+                                    }
                                     $reviewStars = $ratingsRow['stars'];
                                     //format datetime
                                     $dt = date_create($ratingsRow['date_submitted']);
@@ -368,12 +511,12 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                                         </div>";  //data stored for javascript raty plugin initailization
                                 }      
                             } else{
-                                echo "<p id='no_reviews_message'>There are no project reviews yet</p>";
+                                echo "<p id='no_reviews_message' class='no_results'>There are no project reviews yet</p>";
                             }      
                         } 
 
                         //prompt user to write a review
-                        if(!$userHasWrittenReview){ //user has not yet written a review for this project
+                        if(isset($userHasWrittenReview) && !$userHasWrittenReview){ //user has not yet written a review for this project
                             echo "<button type='button' id='rating_prompt'>Write a review for this project</button>
                                 <div id='give_rating'>
                                     <form action='view_project.php' method='POST' id='rating_form'>
@@ -383,10 +526,9 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                                         <br/><button type='button' name='submit_review' id='submit_review'>Submit</button>
                                     </form>
                                 </div>"; //the div id="give_rating" is hidden until button is clicked
-                        }
-                        ?>
-                    </div> <!--end review container div-->
+                        }//end userHasWrittenReview if
+                    } //end userLoggedIn if
+                    echo '</div>'; //<!--end review container div-->*/ ?>
                 </div> <!--end right container div-->
             </div><!--end page_content div-->
-
 <?php include("templates/footer.php"); ?>

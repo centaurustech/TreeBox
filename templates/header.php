@@ -183,7 +183,7 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	      	// print logout url using session and redirect_uri (logout.php page should destroy the session)
       		echo '<div id="fb_user">
       				<div id="user_profile" class="fb_user_button">
-	      				<a href="my_projects.php" class="fb_fxn_link"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
+	      				<a href="my_projects.php" class="fb_fxn_link"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=18&width=18" id="fb_propic"/>
 	      				<span class="fb_title">' . $user->getFirstName() . '</span></a>
 	      			</div>
 		      		<div id="block_logout" class="fb_user_button">
@@ -193,7 +193,10 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	      		</div>'; /*---------------the propic is linked to my_projects.php for now-----------------*/
 	  	} else { //session does not exist
 	      	// show login url
-	  		echo '<div class="block_login">
+	  		echo '<ul id="navbar_menu">
+	      			<li><a href="index.php"><img src="images/home_icon.png" class="navbar_icon"/><span class="navbar_link">Home</span></a></li>
+	      		</ul>
+	      		<div class="block_login">
 	  				<div class="btn-fb-button">
 	  					<a href="' . $helper->getLoginUrl( array( 'email', 'user_friends' )) 
 	  						. '"><span class="icon"></span>

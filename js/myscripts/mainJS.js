@@ -18,3 +18,6 @@ $(document).ready(function() {
 
 	$("div#header_bar").height($("#navbar_menu").outerHeight(true));
 }); //end document.ready()
+$(window).load(function(){ //make sure that ALL items on page TRULY load 
+	$("div#header_bar").height($("#navbar_menu").outerHeight(true));
+});

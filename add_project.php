@@ -99,6 +99,8 @@ session_start(); //for facebook login (set up in "header.php")
 		            	'$projectLocCountry', '$projectLocFormattedAddress')";
 		        executeQuery($query, "Project added to the map!");
 
+		        //$projectId = mysql_insert_id();
+
 		        //for sticky form to clear form
 		        $projectSubmitted = true;
 		    } elseif ($problems) { //Fields are empty or incorrect
