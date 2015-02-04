@@ -20,21 +20,33 @@ $(document).ready(function() {
 		"vertical-align": "top"
 	});
 
+    //location autocomplete
     var input = document.getElementById('project_loc');
     autocomplete = new google.maps.places.Autocomplete(input);
 
-	$("#submit_project").button();
+    //jQuery UI the submit button
+	//$("#submit_project").button();
+    $("a#submit_project").click(function(){
+        $("#add_project_form").submit();
+    })
 
+    //jQuery UI the date
 	$("#project_date").datepicker({
 		showOn: "button",
       	buttonImage: "images/calendar.gif",
       	buttonImageOnly: true,
       	buttonText: "Select date",
       	minDate: new Date(), //sets the minimum date to today with a new Date object
-	});
+        maxDate: "+90d" //limit of only 90 days in advance
+	});    
 
 	/*--------------Validate the form--------------*/
-	$("div.error").hide(); //hide the error hint message
+    /*
+    *override the mainstyle attribute keeping .error's hidden, 
+    *no error message will be shown until the user tries to submit an inappropriate form
+    *the purpose is for this div to also serve as spacing b/t the legend and the form elements
+    */
+	$("div.error").show(); 
 	
     var canSubmit = false;
 	$("#add_project_form").submit(function(event) {
@@ -42,7 +54,7 @@ $(document).ready(function() {
 		var errorCounter = 0; //keep track of form errors
 
         //Validate function
-        var validateClear = function(form_element, formElementVal){
+        var validateClear = function(form_element, formElementVal){ //second run of validation
             form_element.val(formElementVal);
             form_element.removeAttr("style"); //remove highlight
             form_element.next().text("");
@@ -50,12 +62,15 @@ $(document).ready(function() {
         var validateError = function(form_element, errorMessage){
             form_element.next().text(errorMessage); //replaces <span>*</span> with the error message
             form_element.attr("style", "border: 1px solid red"); //add highlight, doing with attr() because it will be removed later on with removeAttr()
+            form_element.focus(function(){
+                form_element.removeAttr("style"); //remove highlight
+            });
             isValid = false;
             errorCounter++;
         }
         var validateForm = function(form_element, errorMessage){
             // validate the project_name entry
-            var formElementVal = form_element.val().trim();
+            var formElementVal = form_element.val().trim(); //sticky
             if (formElementVal == "") {
                 validateError(form_element, errorMessage);
             } else {
@@ -138,11 +153,17 @@ $(document).ready(function() {
         if (projectDate == "") {
         	$("#project_date").next().next().text("Please enter the date of your project."); //need double next()'s because of neighbor calendar img
         	$("#project_date").attr("style", "border: 1px solid red");
+            $("#project_date").click(function(){
+                $("#project_date").removeAttr("style"); //remove highlight
+            });
         	isValid = false;
         	errorCounter++;
         } else if(!datePattern.test(projectDate)) { //make sure valid date format
             $("#project_date").next().next().text("Please enter a valid date (mm/dd/yyyy).");
             $("#project_date").attr("style", "border: 1px solid red");
+            $("#project_date").click(function(){
+                $("#project_date").removeAttr("style"); //remove highlight
+            });
             isValid = false;
             errorCounter++;
        	} else {
@@ -171,4 +192,29 @@ $(document).ready(function() {
             $("div.error").hide();
         }
     });	// end submit
+    
+    //Disable press enter key to submit form if form not completely filled (annoying when trying to confirm geocoder autocomplete selection)
+    function checkIfFullFunction() {
+        var good = true;
+        if($('input#project_name').val().length === 0)
+            good = false;
+        else if($("input#project_date").val().length === 0)
+            good = false;
+        else if($('input#project_loc').val().length === 0)
+            good = false;
+        else if($("textarea#project_descript").val().length === 0)
+            good = false;
+        
+        if(good)
+            return true;
+        else
+            return false;
+    }
+
+    $(window).keydown(function(event){
+        if((event.keyCode == 13) && (checkIfFullFunction() == false) && (!$("textarea").is(":focus"))) {
+            event.preventDefault();
+            return false;
+        }
+    });
 }); //end document.ready()

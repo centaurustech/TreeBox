@@ -8,14 +8,23 @@ $dbc = mysql_connect($hostname, $user, $password);
 mysql_select_db($dbname, $dbc);
 global $dbc;
 
-function deletePoll($poll_id) {
-    GLOBAL $dbc;
-    $query = "DELETE FROM polls WHERE poll_id=$poll_id LIMIT 1";
-    mysql_query($query, $dbc);
-    if (mysql_affected_rows($dbc) == 1) {
-        print '<p style="color: green;">Project successful successfully deleted!</p>';
-    } else {
-        print '<p style="color: red;">Unable to delete.</p>';
+function humanTiming($time){
+    $time = time() - $time; // to get the time since that moment
+
+    $tokens = array (
+        31536000 => 'year',
+        2592000 => 'month',
+        604800 => 'week',
+        86400 => 'day',
+        3600 => 'hour',
+        60 => 'minute',
+        1 => 'second'
+    );
+
+    foreach ($tokens as $unit => $text) {
+        if ($time < $unit) continue;
+        $numberOfUnits = floor($time / $unit);
+        return $numberOfUnits . ' ' . $text . (($numberOfUnits>1) ? 's' : ''); //returns time since now (ie. 1 day, 2 hours). Be sure to append " ago"
     }
 }
 

@@ -8,6 +8,13 @@
 */
 
 /*Everything goes in here*/
+img.check_mark{
+    vertical-align: top;
+    margin-right: .2em;
+    height: 1em;
+    width: 1em;
+}
+
 div#page_content{
 	height: auto; /*******change this value (remove it) if the elements in this div overflow this height
 	this just basically makes the footer stay at the bottom of the fixed page********/
@@ -22,6 +29,9 @@ div.container{
     margin: .7em;
     padding: .8em;
     overflow: auto;
+}
+div.left_page{
+    margin: .7em 0em .7em .7em; /*top right bot left*/
 }
 h2.container_title{
     font-family: Helvetica, Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
@@ -45,7 +55,7 @@ div#right_container{
 /*-----------------------------------project_info container--------------------------------------*/
 div#project_info{
     height: auto;
-    padding: 0 1em;
+    padding: 0 1em 1em;
 }
 h1#display_projectName{
     margin-bottom: .3em;
@@ -74,6 +84,7 @@ p#display_projectDateTime{
 p#display_projectAddr{
     margin: .1em 0;
     font-size: ;
+    width: 25em;
 }
 div#project_members{
     margin-bottom: .5em;
@@ -83,13 +94,11 @@ img.member_propic{
     margin-right: .1em;
 }
 div#join_projectDiv{
-    margin-top: .2em;
+    display: inline-block;
+    margin-right: .5em; /*spacing w/ donate_to_projectDiv*/
 }
-img#check_mark{
-    vertical-align: top;
-    margin-right: .2em;
-    height: 1em;
-    width: 1em;
+div#donate_to_projectDiv{
+    display: inline-block;
 }
 p#display_projectDescript{
 
@@ -226,12 +235,25 @@ div#pinned_posts_container{
 div#post_to_project_div{
     border: .1em solid #D1D1D1;
     padding: 0;
+    margin-bottom: 1em;
+}
+div#post_to_project_placeholder_text{
+    display: block;
+    font-family: 'Lato Regular', Arial, Verdana, Helvetica, sans-serif;
+    margin: .2em;
+    padding: .4em;
+    color: darkGray;
+    cursor: text;
+}
+div#post_content_area{
+    display: none; /*displayed on user click of the div*/
 }
 form#post_to_project_form{
-
+    
 }
 textarea.post_to_project_element{
     margin: .2em;
+    margin-bottom: 0em;
     width: 97.5%;
     font-size: 1em;
     border: 0px;
@@ -241,6 +263,41 @@ textarea.post_to_project_element{
 a#submit_post_to_project{
     float: right;
     margin-right: .5em;
-    margin-bottom: .05em;
+    margin-bottom: .25em;
     font-size: .9em;
+}
+span#post_submitted_message{
+    float: right;
+    margin-top: .4em;
+    margin-right: .7em;
+    font-size: .9em;
+}
+ul#posts_on_display_list{
+    list-style: none;
+}
+li.post_list_element{
+    overflow: hidden; /*floating children do not add to the height of li element, this solves for it*/
+}
+li.post_list_element:not(:last-child){
+    margin-bottom: 1.2em;
+}
+div.post_author_pic{
+    float: left;
+}
+div.post_element_div{
+    float: left;
+    margin-left: .5em;
+}
+p.post_info{
+    margin: 0;
+}
+span.post_author{
+    font-weight: bold;
+}
+span.post_date{
+    margin-left: .9em;
+    font-size: .9em;
+}
+p.post_content{
+    margin: .3em 0em 0em .1em; /*top right bot left*/
 }

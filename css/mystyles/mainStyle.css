@@ -159,6 +159,19 @@ li.error{
 textarea{
     font-family: 'Lato Regular', Arial, Verdana, Helvetica, sans-serif;
 }
+input[type=checkbox].form-checkbox {
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    vertical-align: middle;
+    cursor: pointer;
+}
+label.checkbox-label {
+    margin-left: .5em; 
+    cursor: pointer;
+}
 
 /***************************header div (templates/header.php)*************************/
 div#header{
@@ -167,6 +180,9 @@ div#header{
     background-color:gray;
     border: .1em solid black;
     position: relative; /*to position the div#navbar_div at the bottom of the div*/
+}
+div#page_content{
+
 }
 div#logo{
     height: auto;
@@ -201,7 +217,7 @@ span.navbar_link{
     vertical-align:middle;
 }
 
-    /*----------------facebook functions------------------*/
+    /*----------------functions for the logged in user (appears on right side of header)------------------*/
 div#fb_user{
     display: inline-block;
     float: right;
@@ -225,12 +241,141 @@ a.fb_fxn_link{
     text-decoration: none;
 }
 
+        /*----------------------notifications---------------------*/
+div#notifications{
+    display: inline;
+    position: relative;
+    cursor: pointer;
+    margin-right: .4em;
+}
+
+div.notifications_selected:after, .notifications_selected:before { /*triangle*/
+    bottom: -.7em;
+    right: .4em; /*horizontal positioning of triangle when notifications is selected*/
+    border: 1px solid rgba(100, 100, 100, .4);
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+div.notifications_selected:after {
+    border: 1px solid transparent; /*backgroundcolor of the triangle container*/
+    border-bottom-color: white; /*background-color of the triangle*/
+    border-width: 10px;
+    margin-left: -10px;
+}
+div.notifications_selected:before {
+    border: 1px solid transparent; /*backgroundcolor of the triangle container*/
+    border-bottom-color: white; /*background-color of the triangle*/
+    border-width: 12px;
+    margin-left: -12px;
+}
+
+img#notifications_icon_image{ /*override some of img_button class*/
+    vertical-align: middle; 
+    margin: 0;
+}
+
+div#notifications_div{
+    display: none;
+    position: absolute;
+    right: -.5em;
+    background: rgba(255,255,255,.98);
+    background-color: #fff;
+    border: 1px solid rgba(100, 100, 100, .4);
+    border-top: 1px solid transparent;
+    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+    height: auto;
+    width: 12.5em;
+    cursor: default;
+}
+
+        /*----------------------user profile options---------------------*/
 div#user_profile{
     display: inline;
+    position: relative;
     color: white;
     width: 50%;
-    padding-bottom: 0.3em;
-    margin-left: 1em;
+    padding: 0.3em 0 .4em .8em;
+    margin-right: .3em;
+    border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+div.user_profile_selected:after, .user_profile_selected:before {
+    bottom: -.625em;
+    right: .2em;
+    border: 1px solid rgba(100, 100, 100, .4);
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+div.user_profile_selected:after {
+    border: 1px solid transparent; /*backgroundcolor of the triangle container*/
+    border-bottom-color: white; /*background-color of the triangle*/
+    border-width: 10px;
+    margin-left: -10px;
+}
+div.user_profile_selected:before {
+    border: 1px solid transparent; /*backgroundcolor of the triangle container*/
+    border-bottom-color: white; /*background-color of the triangle*/
+    border-width: 12px;
+    margin-left: -12px;
+}
+
+div#user_options_menu_div{
+    display: none;
+    position: absolute;
+    right: -.55em;
+    background: rgba(255,255,255,.98);
+    background-color: #fff;
+    border: 1px solid rgba(100, 100, 100, .4);
+    border-top: 1px solid transparent;
+    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+    height: auto;
+    width: 12.5em;
+    cursor: default;
+}
+
+ul.user_list{
+    width: 100%;
+    padding-left: 0;
+    margin: .4375em 0;
+    list-style-type: none;
+}
+
+li.user_list_item{ /*these are set so that the element won't shift position when hovered*/
+    background-color: transparent;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    height: auto;
+}
+li.action{
+    cursor: pointer;
+}
+li.action:hover{
+    background-color: #1067A1;
+    border-top: 1px solid #004D80;
+    border-bottom: 1px solid #004D80;
+}
+
+a.user_list_item_link{
+    font-size: .9em;
+    text-decoration: none;
+    color: #232937;
+    display: block;
+    font-family: Helvetica, Arial, 'lucida grande', tahoma, verdana, arial, sans-serif;
+    height: 1.6em;
+    line-height: 1.6em;
+    padding: .1em 1em;
+}
+
+a.action:hover{
+    color: white;
 }
 
 img#fb_propic{
@@ -239,30 +384,28 @@ img#fb_propic{
     width: 1.6em;
 }
 
-div#block_logout {
-    display: inline;
-    width: 9.3125em;
-    padding-bottom: .3em;
-    margin-right: .3em;
-    border-left: 1px solid rgba(0, 0, 0, 0.3);
-}
-
 span.fb_title {
     font-family: "Lucida Grande", Tahoma, sans-serif;
     font-weight: bold;
     font-size: 0.8125em;
     color: #fff;
     line-height: 40px;
-    padding: 0 10px;
+    padding: 0 .625em 0 .5em;
     text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.5);
 }
 
 div.fb_user_button{
     cursor: pointer;
-    padding: .3em .3em 4em;
+    padding: .3em;
 }
 
 div.fb_user_button:hover {
+    /*background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ4NmJiNSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIzM2I2YyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');*/
+    background-size: 100%;
+    background-color: #004E82;
+}
+
+div.fb_user_button_selected {
     /*background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ4NmJiNSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIzM2I2YyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');*/
     background-size: 100%;
     background-color: #004E82;
@@ -277,7 +420,7 @@ div.block_login { /*actually appears where the navbar div should*/
     display: inline-block;
     float: right;
 }
-.btn-fb-button {
+div.btn-fb-button {
     width: 100%;
     height: 1.875em;
     border: .0625em solid rgba(0, 0, 0, 0.3);
@@ -291,7 +434,7 @@ div.block_login { /*actually appears where the navbar div should*/
     box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.2);
     cursor: pointer;
 }
-.btn-fb-button:hover {
+div.btn-fb-button:hover {
     background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzQ4NmJiNSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzIzM2I2YyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
     background-size: 100%;
     background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #486bb5), color-stop(100%, #233b6c));
@@ -299,7 +442,7 @@ div.block_login { /*actually appears where the navbar div should*/
     background-image: -webkit-linear-gradient(top, #486bb5 0%, #233b6c 100%);
     background-image: linear-gradient(to bottom, #486bb5 0%, #233b6c 100%);
 }
-.btn-fb-button .icon {
+div.btn-fb-button .icon {
     background: url(http://s.cdpn.io/6035/fb_login_sprite.png) no-repeat;
     width: .6875em;
     height: 1.375em;
@@ -307,7 +450,7 @@ div.block_login { /*actually appears where the navbar div should*/
     float: left;
     margin: 3px 10px;
 }
-.btn-fb-button .title {
+div.btn-fb-button .title {
     font-family: "Lucida Grande", Tahoma, sans-serif;
     font-weight: bold;
     font-size: 0.8125em;

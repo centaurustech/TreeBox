@@ -15,11 +15,12 @@ function print_array($array) {
 
 	if (!empty($_POST)){
 		//Define query 
+		$authorId = $_POST['author_id'];
 		$projectId = $_POST['project_id'];
-		$participantId = $_POST['participant_id'];
+		$content = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['post_content']))));;
 
-        $query = "INSERT INTO project_members(project_id, participant_id) 
-            VALUES('$projectId', '$participantId')"; //default date_submitted is current timestamp in db, and also default need verification by admin first
+        $query = "INSERT INTO project_posts(author_id, project_id, post_content) 
+            VALUES('$authorId', '$projectId', '$content')"; //default date_submitted is current timestamp in db
         @mysql_query($query, $dbc);
         $successArray = array();
         if (mysql_affected_rows($dbc) == 1) { //something changed
@@ -30,7 +31,7 @@ function print_array($array) {
         
 	    /*encoded like:
 	    {
-	    	"success" : true
+	    	"success" : "true"
 	    }
 	    */
 	    echo json_encode($successArray); 

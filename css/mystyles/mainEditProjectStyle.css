@@ -1,14 +1,13 @@
 /******************************edit_project page (edit_project.php)************************/
 
 div#edit_project{
-    width: 57%;
+    width: 60%;
     /*height: 60%;*/
     height: auto;
     /*background-color: #29C9FF;*/
     border: .1em solid black;
-    font-family: 'Lato', serif;
+    font-family: 'Lato Regular', Arial, serif;
     font-size: 1.5em;
-
     margin-left: auto;
     margin-right: auto; /*centers div*/
     margin-top: 1em;
@@ -17,6 +16,12 @@ div#edit_project{
     border: 2px solid #A0C0C0; 
 }
  /*--------------Form---------------*/
+div.error{ /*override some of the mainstyle .error class attributes*/
+    margin-top: 0;
+}
+a.buttonOne{
+    padding: 0;
+}
 h1#add_project_heading{
     padding-left: 10%;
     margin-top: 4%;
@@ -34,7 +39,6 @@ legend.edit_project{
     color: #0066C0;
     font-weight: bold;
     font-size: 1.6em;
-    margin-bottom: .2em;
     font-family: 'Lato Black';
 }
 label.edit_project{
@@ -47,17 +51,20 @@ label.edit_project{
 input[type=text].edit_project{
     display: inline-block;
     height: 1.5em;
-    width: 18em;
+    width: 24.45em;
     padding-left: .3em;
     font-size: .8em;
-    margin-left: 1em;
-    margin-bottom: .4em;
+    margin-left: .8em;
+    margin-bottom: 1em;
+}
+input#project_date{
+    width: 13.5em;
 }
 textarea#project_description{
     width: 31.7em;
     font-size: .8em;
-    margin-left: 6.3em;
-    margin-bottom: .4em;
+    margin-left: 4.8em;
+    margin-bottom: 1em;
     resize: none; /*removes dashes in the bottom right corner*/
 
     /*Align with form_required asterisk*/
@@ -95,7 +102,7 @@ img#delete_icon{
     height: 1em;
     width: 1em;
 }
-input#submit_project{
+a#submit_project{
     display: inline-block;
     margin-top: 1em;
     float: right;

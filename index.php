@@ -33,7 +33,7 @@ session_start(); //for facebook login (set up in "header.php")
 			    <!--<div id="ads"></div>->
 			</div>-->
 
-            <div id="index_page_content">
+            <div id="page_content">
     			<div id="map_canvas"></div>
     			<!--see "js/myscripts/mainIndexJS.js" will display a custom message 
     				to this div if user clicks on a marker-->
@@ -41,7 +41,10 @@ session_start(); //for facebook login (set up in "header.php")
 
     			<div id="projects_near_you">
                     <input type="text" name="location_search" id="location_search" class="location_search_controls" placeholder="Enter a location" style="display: none;">
-                    
+                    <ul id="viewable_locs" style="display: none;">
+                        <li id="united_states" class="viewable_locs_li">United States</li><li id="singapore_malaysia" class="viewable_locs_li">Singapore/Malaysia</li>
+                    </ul>
+
                     <h1 id='nearby_projs_heading'>Projects near you:</h1>
                     <div id="display_nearby_projs"> 
                         <p id="location_prompt">Please enter a location on the map to find the nearest the projects</p>

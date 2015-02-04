@@ -1,4 +1,5 @@
 <?php //the session for a page should be started on each individual page file at the top
+ob_start();
 $idKey = "590293077747881";
 define("APP_ID", $idKey);
 define("API_KEY", $idKey);
@@ -182,14 +183,31 @@ define("SECRET", "c8d37448f6053582fa825433acbb3614");
 	      		</ul>';
 	      	// print logout url using session and redirect_uri (logout.php page should destroy the session)
       		echo '<div id="fb_user">
+      				<div id="notifications" class="fb_user_button">
+      					<img src="images/notifications_icon.png" id="notifications_icon_image" class="img_button"/>
+      					<div id="notifications_div">
+      						<ul class="user_list">
+      							<li id="no_notifications" class="user_list_item"><a class="user_list_item_link">No new notifications</a></li>
+      							<!--<li class="user_list_item action"><a class="user_list_item_link action"></a></li>-->
+      						</ul>
+      					</div>
+      				</div>
       				<div id="user_profile" class="fb_user_button">
-	      				<a href="my_projects.php" class="fb_fxn_link"><img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=18&width=18" id="fb_propic"/>
-	      				<span class="fb_title">' . $user->getFirstName() . '</span></a>
+	      				<a class="fb_fxn_link">
+	      					<img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=18&width=18" id="fb_propic"/>
+	      					<span class="fb_title">' . $user->getFirstName() . '</span>
+	      					<img src="images/down_icon.png" id="show_more_icon" height="20" width="20" style="vertical-align: middle" />
+	      					<img src="images/down_icon_selected.png" id="show_more_icon_selected" height="20" width="20" style="vertical-align: middle; display: none" />
+	      				</a>
+	      				<div id="user_options_menu_div">
+	      					<ul class="user_list">
+	      						<li class="user_list_item action">
+			      					<a href="' . $helper->getLogoutUrl($session, 'http://localhost/TreeBox/facebook/logout.php')  /*###########################this needs to be updated############*/
+					      				. '" class="user_list_item_link action"><span>Logout</span></a>
+					      		</li>
+		      				</ul>
+	      				</div>
 	      			</div>
-		      		<div id="block_logout" class="fb_user_button">
-	      				<a href="' . $helper->getLogoutUrl($session, 'http://localhost/TreeBox/facebook/logout.php')  /*###########################this needs to be updated############*/
-	      				. '" class="fb_fxn_link"><span class="fb_title">Logout</span></a>
-		      		</div>
 	      		</div>'; /*---------------the propic is linked to my_projects.php for now-----------------*/
 	  	} else { //session does not exist
 	      	// show login url

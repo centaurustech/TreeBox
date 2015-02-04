@@ -16,7 +16,6 @@ $(document).ready(function() {
     autocomplete = new google.maps.places.Autocomplete(input);
 
     /*jQuery UI styling*/
-    $("#submit_project").button();
     $("button#delete_project").button(); 
     if ($('#project_date').length) { //if project_date edit element exists, won't exist if project is expired
         $("#project_date").datepicker({
@@ -28,8 +27,18 @@ $(document).ready(function() {
         });
     }
 
+    /*-----------submit button-----------------*/
+    $("a#submit_project").click(function(){
+        $("#edit_project_form").submit();
+    })
+
     /*--------------Validate the form--------------*/
-    $("div.error").hide(); //hide the error hint message
+    /*
+    *override the mainstyle attribute keeping .error's hidden, 
+    *no error message will be shown until the user tries to submit an inappropriate form
+    *the purpose is for this div to also serve as spacing b/t the legend and the form elements
+    */
+    $("div.error").show(); 
     
     var canSubmit = false;
     $("#edit_project_form").submit(function(event) {

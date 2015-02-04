@@ -1,3 +1,14 @@
+var allowedLocations = { //array of acceptable map locations used in setBoundsOnMap() below
+	unitedStates:new google.maps.LatLngBounds(
+	    new google.maps.LatLng(15, -179), //sw corner
+     	new google.maps.LatLng(75, -50) //ne corner
+	),
+	singaporeMalaysia:new google.maps.LatLngBounds(
+	    new google.maps.LatLng(-2, 95), //sw corner
+     	new google.maps.LatLng(5, 110) //ne corner
+	) 
+}; 
+
 function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerSpiderfier
 	/***-------------------------------populating the map with markers---------------------------***/
     //send ajax requesting markers
@@ -89,7 +100,7 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 								FB.getLoginStatus(function(response) { //just for debugging in console
 								  	if (response.status === 'connected') {
 								    	$("#map_message").append( /*###################the below URL will need to be changed########################*/
-								    		"<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" + marker.id + "' layout='standard' action='like' show_faces='true' share='true'></fb:like></p>"
+								    		"<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" + marker.id + "' layout='button_count' action='like' show_faces='true' share='true'></fb:like></p>"
 								    	);
 								  	}
 								});
@@ -112,9 +123,9 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
 								//to calculate the X coordinate
 								var mapWidth = $("#map_canvas").width();
 								var messageWidth = $("#map_message").outerWidth(true); //full width
-
-								var mapContainerX = mapPosition.left + (mapWidth - messageWidth);
-								var mapContainerY = mapPosition.top;
+								
+								var mapContainerX = mapPosition.left + ((.995 * mapWidth) - messageWidth);
+								var mapContainerY = 1.6 * mapPosition.top;
 
 								$("#map_message").css({
 									top: mapContainerY,
@@ -130,31 +141,43 @@ function getMarkersForMap(map, markers, oms){ //oms being the OverlappingMarkerS
     }); //end ajax for getting all the markers
 }
 
-function setBoundsOnMap(map){
-	/*******------------------ vertically bound the map, restrict user from scrolling outside---------------------**/
-   	var strictBounds = new google.maps.LatLngBounds(
-     	new google.maps.LatLng(-73, -170), //sw corner the lng value doesnt really matter
-     	new google.maps.LatLng(73, 170) //ne corner the lng value doesnt really matter
-   	);
-	// Listen for the dragend event
-	google.maps.event.addListener(map, 'dragend', function() {
-    	if (strictBounds.contains(map.getCenter())) return;
-    	// We're out of bounds - Move the map back within the bounds (only vertical bounds)
-     	var c = map.getCenter(),
-        	x = c.lng(),
-         	y = c.lat(),
-         	//maxX = strictBounds.getNorthEast().lng(),
-         	maxY = strictBounds.getNorthEast().lat(),
-         	//minX = strictBounds.getSouthWest().lng(),
-         	minY = strictBounds.getSouthWest().lat();
+function findCurrentAllowedLoc(map){
+	var allowedLoc = allowedLocations.unitedStates; //default to unitedStates
+	$.each(allowedLocations, function(index, value){ //only allow the map to pan to allowedLocations (array created at the top: for now USA and Singapore/Malaysia only)
+		if(value.contains(map.getCenter())){
+			allowedLoc = value;
+			return value;
+		}
+	});
+	return allowedLoc;
+}
 
-     	//if (x < minX) x = minX;
-     	//if (x > maxX) x = maxX;
-     	if (y < minY) y = minY;
-     	if (y > maxY) y = maxY;
+function setBoundsOnMap(map){ /*-----------restrict user from scrolling outside allowedLocations bounds------------*/
+	var lastValidCenter = map.getCenter();
 
-     	map.setCenter(new google.maps.LatLng(y, x));
-   	}); //end of bounding
+	google.maps.event.addListener(map, 'center_changed', function() {
+		var bounds = findCurrentAllowedLoc(map);
+
+	    if (bounds != null && bounds.contains(map.getCenter())) {
+	        // still within valid bounds, so save the last valid position
+	        lastValidCenter = map.getCenter();
+	        return;
+	    }
+
+	    // not valid anymore => return to last valid position
+	    map.panTo(lastValidCenter);
+	});
+}
+
+function toggleLocSelector(map){ //changes the map according to the location selector list on top right corner of map
+	var currentAllowedLoc = findCurrentAllowedLoc(map);
+    if(currentAllowedLoc == allowedLocations.unitedStates){
+    	$("li#united_states").css("font-weight", "bold");
+    	$("li#singapore_malaysia").css("font-weight", "normal");
+    } else if(currentAllowedLoc == allowedLocations.singaporeMalaysia){
+    	$("li#united_states").css("font-weight", "normal");
+    	$("li#singapore_malaysia").css("font-weight", "bold");
+    }
 }
 
 function getNearbyProjs(latitude, longitude, markers){
@@ -222,21 +245,24 @@ function getNearbyProjs(latitude, longitude, markers){
 
 $(document).ready(function() {
 	/******************** MAP stuff********************/
-    var userLocation = "USA"; //initial location
+    var defaultLocation = "USA"; //initial location
 
 	var geocoder = new google.maps.Geocoder();
-	geocoder.geocode({address : userLocation}, function(results) {
-		var myLatLng = results[0].geometry.location;
+	geocoder.geocode({address : defaultLocation}, function(results) {
+		var defaultLatLng = results[0].geometry.location;
 		var markers = []; //array of markers (will be filled by server ajax request)
 
 		//create map
 		var mapOptions = {
 			zoom: 5,
-			center: myLatLng,
-            minZoom: 3,
+			center: defaultLatLng,
+            minZoom: 5,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
 		var map = new google.maps.Map($("#map_canvas").get(0), mapOptions);
+
+		/*******------------------ vertically bound the map, restrict user from scrolling outside---------------------**/
+	   	setBoundsOnMap(map);
 
 		/************Initialize spiderfier (for the case where there are multiple markers in one loc)****************/
 		var oms = new OverlappingMarkerSpiderfier(map, {
@@ -250,6 +276,12 @@ $(document).ready(function() {
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
         input.style.display = "block"; //display only after it is in position
 
+        var viewableLocs = document.getElementById('viewable_locs');
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(viewableLocs);
+        viewableLocs.style.display = "block"; //display only after it is in position
+        $("ul#viewable_locs li:last-child").css("border-left", "1px solid #BBC9BB");   
+        toggleLocSelector(map);     
+
 		/*--------------/find users location-----------------*/
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -257,14 +289,26 @@ $(document).ready(function() {
                 map.setCenter(initialLocation);
                 map.setZoom(10);
 
-                /*********send ajax request to get nearest projects around user******** /
+                /*********send ajax request to get nearest projects around user********/
 	            /****projects_near_you div****/
 				getNearbyProjs(position.coords.latitude, position.coords.longitude, markers);
+
+				toggleLocSelector(map);
             });
         }  //end geolocation of finding users location
 
-		/*******------------------ vertically bound the map, restrict user from scrolling outside---------------------**/
-	   	setBoundsOnMap(map);
+		/*-----------------------------allowed location selector----------------------------*/
+		$("li.viewable_locs_li").click(function(){
+			var loc = $(this).attr("id");
+			if(loc == "united_states"){
+				map.setCenter(new google.maps.LatLng(38.8833, -100));
+			} else if(loc == "singapore_malaysia"){
+				map.setCenter(new google.maps.LatLng(1.3, 103.8));
+			}
+
+			map.setZoom(5);
+			toggleLocSelector(map);
+		});
 
         /***-------------------------------populating the map with markers---------------------------***/
         getMarkersForMap(map, markers, oms);

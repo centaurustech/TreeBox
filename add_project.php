@@ -10,6 +10,7 @@ session_start(); //for facebook login (set up in "header.php")
     	<!-- style stuff -->
         <link type="text/css" rel='stylesheet' href='css/mystyles/mainAddProjectStyle.css' /><!--add_project page's style stuff-->
         <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet"> <!--jQuery UI style-->
+
         
     	<!-- JS and jQuery stuff -->
     	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> <!--jQuery Library-->
@@ -89,6 +90,12 @@ session_start(); //for facebook login (set up in "header.php")
 		        $projectDate = mysql_real_escape_string(htmlentities(trim(strip_tags($_POST['project_date']))));
 		        $projectDate = new DateTime($projectDate . ' ' . $projectTime); //convert to date time formatting
 		        $projectDate = $projectDate->format('Y-m-d H:i'); //convert back to string (trust me this is necessary, mysql will not do it for you)
+
+		        //Check crowdfunding checkbox
+		        $crowdfunding = false;
+		        if(isset($_POST['crowdfunding_checkbox'])){
+		        	$crowdfunding = true;
+		        }
 		        
 		        //Define query (note that $userId is retrieved by header.php)
 		        $query = "INSERT INTO projects(project_name, user_id, project_description, project_datetime, project_time, 
@@ -98,6 +105,11 @@ session_start(); //for facebook login (set up in "header.php")
 		            	'$projectLocLat', '$projectLocLng', '$projectLocAddress', '$projectLocCity', '$projectLocState', '$projectLocZip', 
 		            	'$projectLocCountry', '$projectLocFormattedAddress')";
 		        executeQuery($query, "Project added to the map!");
+		        if($crowdfunding){
+					$id = mysql_insert_id();
+		        	header("Location: http://localhost/TreeBox/wepay_setup.php?projectId=" . $id);
+		        	die();
+		        }
 
 		        //$projectId = mysql_insert_id();
 

@@ -1,3 +1,8 @@
+<!--
+	If changing anything on this file: make sure to make it sticky in mainAddProjectJS.js for the crowdfunding redirect uri to save
+-->
+
+
 <!--<h1 id="add_project_heading">ADD YOUR PROJECT!</h1>-->
 <form action="<?php echo $project_form_action; ?>" method="POST" id="<?php echo $project_form_id; ?>">
 	<fieldset class="<?php echo $project_form_element_class; ?>">
@@ -10,7 +15,7 @@
 				elseif(isset($edit_project_name)){ echo $edit_project_name; } //edit project page ?>"/>
 
 		<textarea name="project_description" id="project_description" class="<?php echo $project_form_element_class; ?>" rows="10"
-		placeholder='Describe your project (Optional) ie. what kind of volunteers are you looking for, group contact info'><?php 
+		placeholder='Describe your project ie. what kind of volunteers you are looking for, group contact info'><?php 
 			if (!empty($_POST) && !$projectSubmitted) { print $_POST['project_description']; } //Sticky form
 			elseif(isset($edit_project_descript)){ echo $edit_project_descript; } //edit project page ?></textarea>
 
@@ -67,7 +72,14 @@
 			echo "<br/>";
 		}//end if edit_project_hasExpired == false ?>
 
-		<input type="submit" name="submit_project" id="submit_project" class="<?php echo $project_form_element_class; ?>" value="<?php echo $project_form_submit_button_value; ?>"/>
+		<?php /*if($project_form_id == "add_project_form"){ ?>
+			<div id='setup_crowdfunding_div'>
+				<input type="checkbox" name="crowdfunding_checkbox" id="crowdfunding_checkbox" class="form-checkbox" value="includeCF"/>
+				<label for="crowdfunding_checkbox" id="crowdfunding_label" class="checkbox-label">Add Crowdfunding</label>
+			</div> 
+		<?php } //end if project_form_id == add_project_form */?>
+
+		<a id="submit_project" class="<?php echo $project_form_element_class; ?> buttonOne"><?php echo $project_form_submit_button_value; ?></a>
 		<?php if($project_form_id == "edit_project_form"){ ?>
 			<button type="button" name="delete_project" id="delete_project" class="edit_project">
 				<img src="images/delete_icon.png" id="delete_icon"/><span id="delete_project">Delete this project</span>

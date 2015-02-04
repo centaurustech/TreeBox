@@ -19,7 +19,7 @@
     border: .1em solid black;
 }*/
 /*---------page content div---------*/
-div#index_page_content{
+div#page_content{
     height: 89%;
     background-color: #F0F0F0;
     border-bottom: .0625em solid #D9D9D9;
@@ -39,8 +39,13 @@ div#map_message {
     padding: 1em;
     width: 25em;
     background: white;
-    border: .15em solid #D1D1D1;
-    border-radius: .5em;
+    /*border: .15em solid #D1D1D1;*/
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    outline: none;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -120,6 +125,26 @@ p#location_prompt{
     margin-left: -1px;
     padding-left: 14px;  /* Regular padding-left + 1. */
     width: 401px;
+}
+
+ul#viewable_locs{
+}
+li.viewable_locs_li{
+    display: inline;
+    list-style: none;
+    background-color: white;
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    padding: .2em .4em;
+    margin-right: .038em;
+    cursor: pointer;
+}
+li.viewable_locs_li:hover{
+    background-color: #F0F0F0;
 }
 
 h1#nearby_projs_heading{

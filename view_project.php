@@ -3,7 +3,6 @@ include("phpfunctions/mainfunctions.php"); //connects to database
 session_start(); //for facebook login (set up in "header.php")
 
 $projectId = $_GET['proj_id'];  
-
 $query = "SELECT * FROM projects
         WHERE project_id = {$projectId}"; 
 if ($result = @mysql_query($query, $dbc)) { //successful query
@@ -33,7 +32,6 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
     //redirect (accessed page incorrectly)
     header("Location: http://localhost/TreeBox/index.php"); /*###########################this needs to be updated############*/
 }
-
 //Get host user's name:
 $query = "SELECT * FROM users
         WHERE user_id = {$projectHostId}"; 
@@ -41,27 +39,26 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
     $row = mysql_fetch_array($result);
     $projectHost = $row['first_name'] . " " . $row['last_name'];
 }
-
 //Info about project members is done below, after user login is verified
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">  
-        <title><?php echo $projectName . " - TreeBoks"; ?></title>
-    
-    	<!-- style stuff -->
-        <link type="text/css" rel='stylesheet' href='css/mystyles/mainViewProjectStyle.css' /> <!--this page's style stuff-->
-        <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet" /><!--jQuery UI style-->
-        <link href="js/raty-2.7.0/lib/jquery.raty.css" type="text/css" rel="stylesheet" /><!--Raty (star ratings) style-->
-    	
-    	<!-- JS and jQuery stuff -->
-    	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> <!--jQuery Library-->
-        <script type="text/javascript" src="js/jquery-ui.min.js"></script> <!--jQuery UI-->
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> <!--google maps places (includes autocomplete)-->
-        <script type="text/javascript" src="js/raty-2.7.0/lib/jquery.raty.js"></script> <!--Raty (star ratings) library-->
-        <!--*********************- no external JS file for this page *********************** -->
-    </head>
+    <title><?php echo $projectName . " - TreeBoks"; ?></title>
+
+	<!-- style stuff -->
+    <link type="text/css" rel='stylesheet' href='css/mystyles/mainViewProjectStyle.css' /> <!--this page's style stuff-->
+    <link href="css/jquery-ui.min.css" type="text/css" rel="stylesheet" /><!--jQuery UI style-->
+    <link href="js/raty-2.7.0/lib/jquery.raty.css" type="text/css" rel="stylesheet" /><!--Raty (star ratings) style-->
+	
+	<!-- JS and jQuery stuff -->
+	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script> <!--jQuery Library-->
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script> <!--jQuery UI-->
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> <!--google maps places (includes autocomplete)-->
+    <script type="text/javascript" src="js/raty-2.7.0/lib/jquery.raty.js"></script> <!--Raty (star ratings) library-->
+    <!--*********************- no external JS file for this page *********************** -->
+</head>
     <body>
         <div id="container"> <!--closed in footer-->
         	<?php include("templates/header.php");
@@ -80,7 +77,8 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                 $userLoggedIn = false;
             }
 
-            //Get information about the projects members, and see whether user is a member of the project
+            //Get information about the projects members, and see whether user is a member of the project 
+            //up here so that there's $userIsMemberOfProject can be conditioned
             $memberQuery = "SELECT * FROM project_members
                     WHERE project_id = {$projectId}"; 
             if ($result = @mysql_query($memberQuery, $dbc)) { //successful query
@@ -106,6 +104,44 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                         $userName = $participantQueryRow['first_name'] . " " . $participantQueryRow['last_name'];
                     }
                 } //end of while $row
+            } //end of memberQuery result
+
+            //Get posts for this project
+            //up here so that there's $userIsMemberOfProject can be conditioned
+            $postQuery = "SELECT * FROM project_posts
+                WHERE project_id = {$projectId}
+                ORDER BY date_posted DESC";
+            if ($result = @mysql_query($postQuery, $dbc)) { //successful query
+                if (mysql_num_rows($result) > 0) {  //return results (ie. there are posts for this project)
+                    $projectPostsArray = array(); //store posts in an array
+                    while ($row = mysql_fetch_array($result)) {
+                        $authorId = $row['author_id'];
+                        $postContent = $row['post_content'];
+
+                        //format the date
+                        /*$dt = date_create($row['date_posted']);
+                        $datePosted = date_format($dt, 'F j, Y');*/
+                        $time = strtotime($row['date_posted']);
+                        $datePosted = humanTiming($time) . ' ago'; //humanTiming() is a function located in mainfunctions.php
+                        
+                        $authorQuery = "SELECT first_name, last_name FROM users
+                            WHERE user_id = {$authorId}"; 
+                        if ($authorQueryResult = @mysql_query($authorQuery, $dbc)) { //successful query
+                            $authorQueryRow = mysql_fetch_array($authorQueryResult);
+
+                            $authorName = $authorQueryRow['first_name'] . " " . $authorQueryRow['last_name'];
+                        } //end of $authorQuery result
+
+                        $projectPostsArray[] = array("author_id" => $authorId,
+                            "author_name" => $authorName, //to get propic <img src = "https://graph.facebook.com/'. $userId . '/picture?type=square&height=15&width=15" id="fb_propic"/>
+                            "post_content" => $postContent,
+                            "date_posted" => $datePosted); 
+                    } //end of while $row
+
+                    $projectHasPosts = true;
+                } else{
+                    $projectHasPosts = false;
+                }
             } //end of memberQuery result
 
             /*//Check whether user has already submitted a review for this project (if so, he/she cannot do so again: is prevented at the bottom of code)
@@ -163,7 +199,7 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
     }
     function adjustContentHeight(minimize){
         var heightRightPg = $("div#right_container").outerHeight(true); //true for include margin
-        var heightLeftPg = $("div#left_container").outerHeight(true) + 16; //+16 to account for rendering of message_fbShareLike element
+        var heightLeftPg = $("div#left_container").outerHeight(true) + (.03 * $("div#container").height()); //+3% of container div to account for rendering of message_fbShareLike element
         var maxHeight = Math.max(heightRightPg, heightLeftPg);
         var height = Math.max(maxHeight, .89 * $("div#container").height()); //test again vs. the container this time
 
@@ -374,7 +410,7 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                     success: function(data) {
                         var isSuccess = data.success;
                         if(isSuccess == true){
-                            $("div#join_projectDiv").html("<span class='success'><img src='images/check_icon.png' id='check_mark'/>You are now a member of this project</span>");
+                            $("div#join_projectDiv").html("<span class='success'><img src='images/check_icon.png' class='check_mark'/>Your membership request has been submitted to the admin for verification</span>");
                         } else{
                             $("div#join_projectDiv").html("<span class='error'>Oops, something went wrong</span>");
                         }
@@ -386,15 +422,80 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
         } //end if join_projectDiv exists
 
         /*------------------------------------Pinned posts---------------------------------------*/
-        if($('div#post_to_project_div').length > 0){
-            var height = $("div#post_to_project_div").height() + $("a#submit_post_to_project").outerHeight(true);
-            $("div#post_to_project_div").height(height);
-
-            $("a#submit_post_to_project").click(function(evt){
-                evt.preventDefault();
+        if($('div#post_to_project_div').length > 0){ //if the pinned posts div exists
+            $("div#post_to_project_div").click(function(){
+                $("textarea#post_to_project_content").focus();
             });
-        }
 
+            $("textarea#post_to_project_content").focus(function(){
+                $("div#post_content_area").show();
+                $("div#post_to_project_placeholder_text").hide();
+
+                //adjust the height of the post_to project div
+                var height = $("div#post_content_area").height() + $("a#submit_post_to_project").outerHeight(true);
+                $("div#post_to_project_div").height(height);
+
+                $(document).click(function(event){ 
+                    if(!$(event.target).closest('div#post_to_project_div').length) { //make sure the element clicked is not an ancestor of the post_to_project_div
+                        $("div#post_content_area").hide();
+                        $("div#post_to_project_placeholder_text").show();
+
+                        //adjust the height of the post_to project div
+                        var height = $("div#post_to_project_placeholder_text").outerHeight(true);
+                        $("div#post_to_project_div").height(height);
+
+                        //adjust height of container for the footer
+                        adjustContentHeight();
+                    } 
+                });
+
+                //adjust height of container for the footer
+                adjustContentHeight();
+            });
+            
+            $("a#submit_post_to_project").click(function(evt){
+                var content = $("textarea#post_to_project_content").val().trim();
+
+                //validate form
+                var isValid = true;
+                if(content.length == 0){ //empty
+                    isValid = false;
+                    $("span#post_submitted_message").html("Please write a post before submitting").css("color", "#FF6969");
+                } else{
+                    $("span#post_submitted_message").html(""); // remove message
+                }
+
+                if(isValid){
+                    var postContent = content;
+
+                    $.ajax({
+                        url: "phpfunctions/submitPost.php",
+                        type: "POST",
+                        data: {
+                            post_content    : postContent,
+                            author_id       : "<?php if(isset($userId)){ echo $userId; } ?>",
+                            project_id      : "<?php echo $projectId;?>"
+                        },
+                        dataType: "json",
+                        error: function(xhr, status, error) {
+                            alert("Error: " + xhr.status + " - " + error);
+                        },
+                        success: function(data) {
+                            var isSuccess = data.success;
+                            if(isSuccess == true){
+                                $("span#post_submitted_message").html("<img src='images/check_icon.png' class='check_mark'/>Your post has been submitted").css("color", "green");
+                                $("textarea#post_to_project_content").val("");
+                            } else{
+                                $("span#post_submitted_message").html("There was an error in sending your message. Please try again later").css("color", "red");
+                            }
+                        } //end success
+                    }); //end ajax
+                } //end if(isValid)
+                evt.preventDefault();
+            });// end submit_post_to_project_listener
+        }//end if(div_post_to_project) exists
+
+        adjustContentHeight(true);
     });  // end ready
 </script>
 
@@ -437,28 +538,55 @@ if ($result = @mysql_query($query, $dbc)) { //successful query
                             if($userLoggedIn && !$userIsMemberOfProject && !$userIsHostOfProject){ //not a current member, prompt them to join
                                 echo "<div id='join_projectDiv'><a id='join_projectButton' class='buttonOne'><img src='images/join_icon.png' class='img_button' /><span id='join_project_message' class='button_message'>Join</span></a></div>";
                             } 
+                            //echo "<div id='donate_to_projectDiv'><a id='donate_to_projectButton' class='buttonTwo'><img src='images/donate_icon.png' class='img_button' /><span id='donate_to_project_message' class='button_message'>Contribute</span></a></div>";
 
                             echo "<p id='display_projectDescript'>" . $projectDescrip . "</p>";
 
                             //FB like and share buttons
                             if ( isset( $session ) ) { //user is logged in
-                                echo "<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" . $projectId . "' layout='standard' action='like' show_faces='true' share='true'></fb:like></p>";
+                                echo "<p id='message_fbShareLike'><fb:like href='http://localhost/TreeBox/view_project.php?proj_id=" . $projectId . "' layout='button_count' action='like' show_faces='true' share='true'></fb:like></p>";
                             }
                         ?>
                     </div>
-                    <div id="pinned_posts_container" class='container left_page'>
-                        <h2 id='review_title' class='container_title'>Pinned Posts</h2>
-                        <?php
-                        if($userLoggedIn && ($userIsMemberOfProject || $userIsHostOfProject)){
-                            echo "<div id='post_to_project_div'>
-                                    <form action='view_project.php' method='POST' id='post_to_project_form'>
-                                        <textarea name='post_to_project_content' id='post_to_project_content' class='post_to_project_element' rows=3 placeholder='Write a post here'></textarea>
-                                        <a id='submit_post_to_project' class='buttonTwo'>Post</a>
-                                    </form>
-                                </div>";
-                        }
-                        ?>
-                    </div>
+                    <?php
+                    if($projectHasPosts || ($userLoggedIn && ($userIsMemberOfProject || $userIsHostOfProject))){
+                        echo "<div id='pinned_posts_container' class='container left_page'>
+                            <h2 id='review_title' class='container_title'>Pinned Posts</h2>";
+                            
+                            //Prompt user to post if he is a member or the host
+                            if($userLoggedIn && ($userIsMemberOfProject || $userIsHostOfProject)){
+                                echo "<div id='post_to_project_div'>
+                                        <div id='post_to_project_placeholder_text'>Post your thoughts</div>
+                                        <div id='post_content_area'>
+                                            <form action='view_project.php' method='POST' id='post_to_project_form'>
+                                                <textarea name='post_to_project_content' id='post_to_project_content' class='post_to_project_element' rows=3 placeholder='Post your thoughts'></textarea>
+                                                <a id='submit_post_to_project' class='buttonTwo'>Post</a><span id='post_submitted_message'></span>
+                                            </form>
+                                        </div>
+                                    </div>";
+                            }
+
+                            if($projectHasPosts){
+                                //Display the posts
+                                echo "<ul id='posts_on_display_list'>";
+                                foreach($projectPostsArray as $value){
+                                    $postAuthorName = $value["author_name"];
+                                    $postAuthorId = $value['author_id'];
+                                    $postAuthorPic = '<img src="https://graph.facebook.com/'. $postAuthorId . '/picture?type=square&height=32&width=32" class="member_propic" title="' . $postAuthorName . '" alt="'. $postAuthorName . '" border=".1em solid #D9D9D9"/>';
+                                    $postContent = $value["post_content"];
+                                    $postDate = $value['date_posted'];
+
+                                    echo "<li class='post_list_element'><div class='post_author_pic'>" . $postAuthorPic . "</div>"
+                                        . "<div class='post_element_div'><p class='post_info'><span class='post_author'>" . $postAuthorName . "</span>"
+                                        . "<span class='post_date'>" . $postDate . "</span></p>"
+                                        . "<p class='post_content'>" . $postContent . "</p></div></li>";
+                                }
+                                echo "</ul>";
+                            }
+
+                        echo "</div>";
+                    }
+                    ?>
                 </div>
                 <div id="right_container">
                     <div id="map_container" class="container right_page">
